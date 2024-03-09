@@ -1,0 +1,30 @@
+server:
+  port: 8084
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/rk_order
+    username: postgres
+    password: user
+  jpa:
+    generate-ddl: true
+  application:
+    name: rk-order-service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+grpc:
+  server:
+    port: 9091
+  client:
+    sneakerService:
+      address: 'static://localhost:9090'
+      enable-keep-alive: true
+      keep-alive-without-calls: true
+      negotiation-type: plaintext
+logging:
+  level:
+    io:
+      grpc: DEBUG

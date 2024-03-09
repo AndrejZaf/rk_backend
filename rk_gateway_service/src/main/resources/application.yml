@@ -1,0 +1,49 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: rk-gateway-service
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins:
+              - "http://localhost:4200"
+              - "http://localhost:4201"
+            allowed-headers:
+              - "*"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+              - HEAD
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+        - id: rk-account-service
+          uri: lb://rk-account-service
+          predicates:
+            - Path=/api/account/**
+        - id: rk-inventory-service
+          uri: lb://rk-inventory-service
+          predicates:
+            - Path=/api/inventory/**
+        - id: rk-order-service
+          uri: lb://rk-order-service
+          predicates:
+            - Path=/api/order/**
+        - id: rk-payment-service
+          uri: lb://rk-payment-service
+          predicates:
+            - Path=/api/payment/**
