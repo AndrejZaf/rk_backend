@@ -10,9 +10,11 @@ import com.stripe.model.Customer;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.math.BigDecimal;
 
@@ -23,15 +25,12 @@ public class PaymentServiceImpl implements PaymentService {
     @Value("${stripe.api-key}")
     private String STRIPE_API_KEY;
 
-    @Value("${client.base-url}")
-    private String clientBaseUrl;
-
     private final ExternalOrderService externalOrderService;
 
     @Override
-    public String generateSessionUrl(String id) throws StripeException {
+    public String generateSessionUrl(String id, HttpServletRequest request) throws StripeException {
         Stripe.apiKey = STRIPE_API_KEY;
-        String clientBaseURL = clientBaseUrl;
+        String clientBaseURL = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();
         OrderDetailsDTO orderDetails = externalOrderService.getOrderDetails(id);
 
         Customer customer = Customer.create(CustomerCreateParams.builder()
@@ -42,8 +41,8 @@ public class PaymentServiceImpl implements PaymentService {
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
                         .setCustomer(customer.getId())
-                        .setSuccessUrl(clientBaseURL + "/success?session_id={CHECKOUT_SESSION_ID}")
-                        .setCancelUrl(clientBaseURL + "/failure");
+                        .setSuccessUrl(String.format("%s/api/payment/%s/", clientBaseURL, id))
+                        .setCancelUrl(String.format("%s/failure", clientBaseURL));
 
         for (ProductDTO product : orderDetails.getProducts()) {
             paramsBuilder.addLineItem(
@@ -57,7 +56,7 @@ public class PaymentServiceImpl implements PaymentService {
                                                             .setName(product.getName())
                                                             .build())
                                             .setCurrency(SessionCreateParams.PaymentMethodOptions.AcssDebit.Currency.USD.toString())
-                                            .setUnitAmountDecimal(BigDecimal.valueOf(product.getPrice()))
+                                            .setUnitAmount(product.getPrice().longValue() * 100L)
                                             .build())
                             .build());
         }

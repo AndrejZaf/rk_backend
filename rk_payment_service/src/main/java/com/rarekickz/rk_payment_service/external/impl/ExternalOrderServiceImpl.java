@@ -16,15 +16,7 @@ import static com.rarekickz.rk_payment_service.external.converter.OrderDetailsCo
 public class ExternalOrderServiceImpl implements ExternalOrderService {
 
     @GrpcClient("orderService")
-    private final OrderServiceGrpc.OrderServiceBlockingStub orderServiceBlockingStub;
-
-    public ExternalOrderServiceImpl() {
-        final ManagedChannel managedChannel = ManagedChannelBuilder
-                .forAddress("localhost", 9091)
-                .usePlaintext()
-                .build();
-        orderServiceBlockingStub = OrderServiceGrpc.newBlockingStub(managedChannel);
-    }
+    private OrderServiceGrpc.OrderServiceBlockingStub orderServiceBlockingStub;
 
     @Override
     public OrderDetailsDTO getOrderDetails(String orderId) {

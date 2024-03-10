@@ -25,7 +25,7 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
         final String orderUuid = request.getOrderId();
         final Order order = orderService.findByUuid(orderUuid);
         List<Long> sneakerIds = order.getOrderInventory().stream()
-                .map(OrderInventory::getId)
+                .map(OrderInventory::getSneakerId)
                 .toList();
         List<ExtendedSneakerDTO> sneakerDetails = externalSneakerService.getSneakerDetails(sneakerIds);
         List<Product> products = sneakerDetails.stream()
