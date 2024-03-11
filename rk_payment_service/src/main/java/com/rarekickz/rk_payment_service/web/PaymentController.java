@@ -16,8 +16,8 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping("/{id}")
-    ResponseEntity<String> payOrder(@PathVariable String id, HttpServletRequest request) throws StripeException {
-        String stripeSessionUrl = paymentService.generateSessionUrl(id, request);
+    ResponseEntity<String> payOrder(@PathVariable String id) throws StripeException {
+        String stripeSessionUrl = paymentService.generateSessionUrl(id);
         return new ResponseEntity<>(stripeSessionUrl, HttpStatus.OK);
     }
 

@@ -5,5 +5,5 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface PaymentService {
 
-    String generateSessionUrl(String id, HttpServletRequest request) throws StripeException;
+    String generateSessionUrl(String id) throws StripeException;
 }

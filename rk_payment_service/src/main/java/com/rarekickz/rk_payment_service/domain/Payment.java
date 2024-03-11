@@ -5,12 +5,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity(name = "rk_payment")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "payment")
+// TODO: Rename it to PaymentSession
 public class Payment extends Auditable {
 
     @Id
@@ -18,5 +25,8 @@ public class Payment extends Auditable {
     private Long id;
 
     @Column(name = "order_id", nullable = false)
-    private Long orderId;
+    private String orderId;
+
+    @Column(name = "stripe_session_id", nullable = false)
+    private String stripeSessionId;
 }
