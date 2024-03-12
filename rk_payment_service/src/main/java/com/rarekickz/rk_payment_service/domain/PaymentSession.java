@@ -16,9 +16,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "payment")
-// TODO: Rename it to PaymentSession
-public class Payment extends Auditable {
+@Entity(name = "payment_session")
+public class PaymentSession extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

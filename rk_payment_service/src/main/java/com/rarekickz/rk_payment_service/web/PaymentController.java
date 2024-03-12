@@ -1,7 +1,11 @@
 package com.rarekickz.rk_payment_service.web;
 
-import com.rarekickz.rk_payment_service.service.PaymentService;
+import com.rarekickz.rk_payment_service.dto.StripeSessionDTO;
+import com.rarekickz.rk_payment_service.dto.WebhookDTO;
+import com.rarekickz.rk_payment_service.service.PaymentSessionService;
+import com.rarekickz.rk_payment_service.service.StripeService;
 import com.stripe.exception.StripeException;
+import com.stripe.model.checkout.Session;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,16 +17,18 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final PaymentService paymentService;
+    private final StripeService stripeService;
+    private final PaymentSessionService paymentSessionService;
 
     @GetMapping("/{id}")
-    ResponseEntity<String> payOrder(@PathVariable String id) throws StripeException {
-        String stripeSessionUrl = paymentService.generateSessionUrl(id);
-        return new ResponseEntity<>(stripeSessionUrl, HttpStatus.OK);
+    ResponseEntity<StripeSessionDTO> payOrder(@PathVariable String id) throws StripeException {
+        Session session = stripeService.generateSession(id);
+        return new ResponseEntity<>(new StripeSessionDTO(session.getUrl()), HttpStatus.OK);
     }
 
-    @GetMapping("{id}/success")
-    ResponseEntity<String> finalizeOrder(@PathVariable String id, HttpServletRequest request) throws StripeException {
+    @PostMapping("/success")
+    ResponseEntity<String> finalizeOrder(@RequestBody WebhookDTO webhookDTO) throws StripeException {
+        paymentSessionService.processWebhook(webhookDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

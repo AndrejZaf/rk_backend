@@ -5,9 +5,10 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 
 public interface StripeService {
-    Session generateSession(String orderId, OrderDetailsDTO orderDetails) throws StripeException;
 
-    void registerWebhooks();
+    Session generateSession(String orderId) throws StripeException;
 
-    void clearWebhooks();
+    void registerWebhooks() throws StripeException;
+
+    void clearWebhooks() throws StripeException;
 }
