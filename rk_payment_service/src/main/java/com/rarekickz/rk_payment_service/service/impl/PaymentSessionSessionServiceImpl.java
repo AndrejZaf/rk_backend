@@ -8,9 +8,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.stripe.param.WebhookEndpointCreateParams.EnabledEvent.CHECKOUT__SESSION__COMPLETED;
-import static com.stripe.param.WebhookEndpointCreateParams.EnabledEvent.CHECKOUT__SESSION__EXPIRED;
-
 @Service
 @RequiredArgsConstructor
 public class PaymentSessionSessionServiceImpl implements PaymentSessionService {
@@ -32,6 +29,7 @@ public class PaymentSessionSessionServiceImpl implements PaymentSessionService {
 
     @Override
     public void processWebhook(final WebhookDTO webhookDTO) {
+        // TODO: Use an enum here
         switch (webhookDTO.getType()) {
             case "checkout.session.completed":
                 finalizeOrder(webhookDTO.getData().getObject().getId());
