@@ -5,7 +5,7 @@ import rarekickz.rk_order_service.dto.CreateOrderDTO;
 
 public interface OrderService {
 
-    Order create(CreateOrderDTO createOrderDTO);
+    String create(CreateOrderDTO createOrderDTO);
 
     Order findByUuid(String id);
 }

@@ -19,8 +19,8 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderIdentifierDTO> createOrder(@RequestBody final CreateOrderDTO createOrderDTO) {
-        final Order order = orderService.create(createOrderDTO);
-        return new ResponseEntity<>(new OrderIdentifierDTO(order.getUuid().toString()), HttpStatus.OK);
+        final String paymentSession = orderService.create(createOrderDTO);
+        return new ResponseEntity<>(new OrderIdentifierDTO(paymentSession), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

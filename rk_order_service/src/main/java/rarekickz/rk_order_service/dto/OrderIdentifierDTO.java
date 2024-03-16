@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class OrderIdentifierDTO {
 
-    private String orderId;
+    private String sessionUrl;
 }

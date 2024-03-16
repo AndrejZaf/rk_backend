@@ -8,6 +8,7 @@ import rarekickz.rk_order_service.domain.Order;
 import rarekickz.rk_order_service.dto.CreateOrderDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.enums.OrderStatus;
+import rarekickz.rk_order_service.external.ExternalPaymentService;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
 import rarekickz.rk_order_service.repository.OrderRepository;
 import rarekickz.rk_order_service.service.DeliveryInfoService;
@@ -25,16 +26,17 @@ public class OrderServiceImpl implements OrderService {
     private final DeliveryInfoService deliveryInfoService;
     private final OrderInventoryService orderInventoryService;
     private final OrderRepository orderRepository;
+    private final ExternalPaymentService externalPaymentService;
 
     @Override
-    public Order create(final CreateOrderDTO createOrderDTO) {
+    public String create(final CreateOrderDTO createOrderDTO) {
         externalSneakerService.reserve(createOrderDTO.getSneakers());
         final DeliveryInfo deliveryInfo = deliveryInfoService.save(createOrderDTO.getDeliveryInfo());
         Order order = createOrder(createOrderDTO);
         order.setDeliveryInfo(deliveryInfo);
         order = orderRepository.save(order);
         orderInventoryService.save(createOrderDTO.getSneakers(), order);
-        return order;
+        return externalPaymentService.getStripeSessionUrl(order.getUuid().toString());
     }
 
     @Override

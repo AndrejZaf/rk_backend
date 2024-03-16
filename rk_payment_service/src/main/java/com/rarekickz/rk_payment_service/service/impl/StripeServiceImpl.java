@@ -74,7 +74,7 @@ public class StripeServiceImpl implements StripeService {
                 WebhookEndpointCreateParams.builder()
                         .addEnabledEvent(WebhookEndpointCreateParams.EnabledEvent.CHECKOUT__SESSION__COMPLETED)
                         .addEnabledEvent(WebhookEndpointCreateParams.EnabledEvent.CHECKOUT__SESSION__EXPIRED)
-                        .setUrl("https://9712-46-217-148-253.ngrok-free.app/api/payment/success")
+                        .setUrl("https://4624-77-28-247-206.ngrok-free.app/api/payment")
                         .build();
         WebhookEndpoint.create(params);
     }

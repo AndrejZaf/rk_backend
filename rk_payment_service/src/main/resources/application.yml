@@ -22,6 +22,8 @@ stripe:
 client:
   base-url: http://localhost:4201
 grpc:
+  server:
+    port: 9092
   client:
     orderService:
       address: 'static://localhost:9091'
