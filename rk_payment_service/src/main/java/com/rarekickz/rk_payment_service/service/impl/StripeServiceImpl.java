@@ -46,7 +46,7 @@ public class StripeServiceImpl implements StripeService {
         SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setCustomer(customer.getId())
-                .setSuccessUrl(String.format("%s/success/%s", clientBaseUrl, orderId))
+                .setSuccessUrl(String.format("%s/shopping-cart/success/%s", clientBaseUrl, orderId))
                 .setCancelUrl(String.format("%s/failure/%s", clientBaseUrl, orderId));
         orderDetails.getProducts().forEach(product -> {
             paramsBuilder.addLineItem(SessionCreateParams.LineItem.builder()
