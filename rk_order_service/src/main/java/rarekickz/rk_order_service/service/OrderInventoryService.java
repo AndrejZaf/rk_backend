@@ -5,9 +5,12 @@ import rarekickz.rk_order_service.domain.OrderInventory;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 public interface OrderInventoryService {
 
     Set<OrderInventory> save(Collection<SneakerDTO> sneakers, Order order);
+
+    List<OrderInventory> findAllByOrderId(String orderId);
 }

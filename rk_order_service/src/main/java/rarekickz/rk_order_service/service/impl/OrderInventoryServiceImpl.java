@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +30,10 @@ public class OrderInventoryServiceImpl implements OrderInventoryService {
                         .build())
                 .toList();
         return new HashSet<>(orderInventoryRepository.saveAll(orderInventory));
+    }
+
+    @Override
+    public List<OrderInventory> findAllByOrderId(String orderId) {
+        return orderInventoryRepository.findByOrderUuid(UUID.fromString(orderId));
     }
 }
