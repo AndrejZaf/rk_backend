@@ -1,5 +1,6 @@
 package com.rarekickz.rk_payment_service.external.impl;
 
+import com.google.protobuf.Empty;
 import com.rarekickz.proto.lib.OrderRequest;
 import com.rarekickz.proto.lib.OrderResponse;
 import com.rarekickz.proto.lib.OrderServiceGrpc;
@@ -25,5 +26,21 @@ public class ExternalOrderServiceImpl implements ExternalOrderService {
                 .build();
         final OrderResponse orderResponse = orderServiceBlockingStub.getOrderDetails(orderRequest);
         return convertToOrderDetailsDTO(orderResponse);
+    }
+
+    @Override
+    public void finalizeOrder(String orderId) {
+        final OrderRequest orderRequest = OrderRequest.newBuilder()
+                .setOrderId(orderId)
+                .build();
+        orderServiceBlockingStub.finalizeOrder(orderRequest);
+    }
+
+    @Override
+    public void cancelOrder(String orderId) {
+        final OrderRequest orderRequest = OrderRequest.newBuilder()
+                .setOrderId(orderId)
+                .build();
+        orderServiceBlockingStub.cancelOrder(orderRequest);
     }
 }

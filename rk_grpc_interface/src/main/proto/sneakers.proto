@@ -8,6 +8,7 @@ option java_outer_classname = "SneakersProto";
 
 service SneakerService {
   rpc reserve(ReserveSneakersRequest) returns (google.protobuf.Empty) {};
+  rpc cancelReservation(ReserveSneakersRequest) returns (google.protobuf.Empty) {};
   rpc getSneakerPrice(SneakerIdsRequest) returns (OrderTotalPriceResponse) {};
   rpc getSneakerDetails(SneakerIdsRequest) returns (SneakerDetailsResponse) {};
 }

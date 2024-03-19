@@ -9,6 +9,8 @@ public interface ExternalSneakerService {
 
     void reserve(List<SneakerDTO> sneakers);
 
+    void cancel(List<SneakerDTO> sneakers);
+
     Double getTotalPrice(List<Long> sneakerIds);
 
     List<ExtendedSneakerDTO> getSneakerDetails(List<Long> sneakerIds);

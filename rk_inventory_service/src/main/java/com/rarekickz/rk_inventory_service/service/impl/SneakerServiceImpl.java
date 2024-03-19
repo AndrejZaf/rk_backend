@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.rarekickz.rk_inventory_service.specification.SneakerSpecification.createSneakerSpecification;
 import static java.util.stream.Collectors.*;
@@ -56,8 +58,8 @@ public class SneakerServiceImpl implements SneakerService {
 
     @Override
     public void reserve(final Collection<ReserveSneakerDTO> reservedSneakers) {
-        final Map<Long, List<Double>> sneakerIdToSizes = reservedSneakers.stream()
-                .collect(groupingBy(ReserveSneakerDTO::getSneakerId, mapping(ReserveSneakerDTO::getSize, toList())));
+        final Map<Long, ReserveSneakerDTO> sneakerIdToSizes = reservedSneakers.stream()
+                .collect(Collectors.toMap(ReserveSneakerDTO::getSneakerId, Function.identity()));
         final List<Long> sneakerIds = reservedSneakers.stream()
                 .map(ReserveSneakerDTO::getSneakerId)
                 .toList();
@@ -70,8 +72,8 @@ public class SneakerServiceImpl implements SneakerService {
 
         sneakers.forEach(sneaker -> {
             final Set<SneakerSize> sneakerSizes = sneaker.getSneakerSizes();
-            final Double size = sneakerIdToSizes.get(sneaker.getId()).get(0);
-            SneakerSize sneakerSizeFromDb = sneakerSizes.stream()
+            final Double size = sneakerIdToSizes.get(sneaker.getId()).getSize();
+            final SneakerSize sneakerSizeFromDb = sneakerSizes.stream()
                     .filter(sneakerSize -> sneakerSize.getSneakerSizeId().getSize().equals(size))
                     .findFirst().orElseThrow(() -> new InvalidSizeException("The selected size is not available"));
             if (sneakerSizeFromDb.getQuantity().equals(0L)) {
@@ -79,6 +81,24 @@ public class SneakerServiceImpl implements SneakerService {
             }
 
             sneakerSizeFromDb.setQuantity(sneakerSizeFromDb.getQuantity() - 1);
+        });
+        sneakerRepository.saveAll(sneakers);
+    }
+
+    @Override
+    public void cancel(Collection<ReserveSneakerDTO> reservedSneakers) {
+        final List<Long> sneakerIds = reservedSneakers.stream()
+                .map(ReserveSneakerDTO::getSneakerId)
+                .toList();
+        final Map<Long, ReserveSneakerDTO> sneakerIdToSizes = reservedSneakers.stream()
+                .collect(Collectors.toMap(ReserveSneakerDTO::getSneakerId, Function.identity()));
+        final List<Sneaker> sneakers = sneakerRepository.findAllWithSizes(sneakerIds);
+        sneakers.forEach(sneaker -> {
+            final Double size = sneakerIdToSizes.get(sneaker.getId()).getSize();
+            final SneakerSize sneakerSizeFromDb = sneaker.getSneakerSizes().stream()
+                    .filter(sneakerSize -> sneakerSize.getSneakerSizeId().getSize().equals(size))
+                    .findFirst().orElseThrow(() -> new InvalidSizeException("The selected size is not available"));
+            sneakerSizeFromDb.setQuantity(sneakerSizeFromDb.getQuantity() + 1);
         });
         sneakerRepository.saveAll(sneakers);
     }

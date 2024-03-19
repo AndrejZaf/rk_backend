@@ -2,6 +2,7 @@ package com.rarekickz.rk_payment_service.service.impl;
 
 import com.rarekickz.rk_payment_service.domain.PaymentSession;
 import com.rarekickz.rk_payment_service.dto.WebhookDTO;
+import com.rarekickz.rk_payment_service.external.ExternalOrderService;
 import com.rarekickz.rk_payment_service.repository.PaymentSessionRepository;
 import com.rarekickz.rk_payment_service.service.PaymentSessionService;
 import jakarta.persistence.EntityNotFoundException;
@@ -10,9 +11,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class PaymentSessionSessionServiceImpl implements PaymentSessionService {
+public class PaymentSessionServiceImpl implements PaymentSessionService {
 
     private final PaymentSessionRepository paymentSessionRepository;
+    private final ExternalOrderService externalOrderService;
 
     @Override
     public void create(String orderId, String sessionId) {
@@ -42,13 +44,13 @@ public class PaymentSessionSessionServiceImpl implements PaymentSessionService {
 
     private void finalizeOrder(final String sessionId) {
         PaymentSession paymentSession = findByStripeSessionId(sessionId);
-        // TODO: mark the order as paid in the other schema
+        externalOrderService.finalizeOrder(paymentSession.getOrderId());
     }
 
     private void cancelOrder(final String sessionId) {
         final PaymentSession paymentSession = findByStripeSessionId(sessionId);
         paymentSessionRepository.delete(paymentSession);
-        // TODO: Cancel the order in revert the inventory
+        externalOrderService.cancelOrder(paymentSession.getOrderId());
     }
 
     private PaymentSession findByStripeSessionId(String stripeSessionId) {

@@ -32,7 +32,21 @@ public class ExternalSneakerServiceImpl implements ExternalSneakerService {
         final ReserveSneakersRequest reserveSneakersRequest = ReserveSneakersRequest.newBuilder()
                 .addAllSneakers(sneakerRequests)
                 .build();
-        sneakerServiceBlockingStub.withDeadlineAfter(60, TimeUnit.SECONDS).reserve(reserveSneakersRequest);
+        sneakerServiceBlockingStub.reserve(reserveSneakersRequest);
+    }
+
+    @Override
+    public void cancel(List<SneakerDTO> sneakers) {
+        final List<SneakerRequest> sneakerRequests = sneakers.stream()
+                .map(sneakerDTO -> SneakerRequest.newBuilder()
+                        .setSneakerId(sneakerDTO.getId())
+                        .setSneakerSize(sneakerDTO.getSize())
+                        .build())
+                .toList();
+        final ReserveSneakersRequest reserveSneakersRequest = ReserveSneakersRequest.newBuilder()
+                .addAllSneakers(sneakerRequests)
+                .build();
+        sneakerServiceBlockingStub.cancelReservation(reserveSneakersRequest);
     }
 
     @Override

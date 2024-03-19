@@ -45,6 +45,11 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
+    @Override
+    public Order save(final Order order) {
+        return orderRepository.save(order);
+    }
+
     private Order createOrder(final CreateOrderDTO createOrderDTO) {
         final List<Long> sneakerIds = createOrderDTO.getSneakers().stream()
                 .map(SneakerDTO::getId)

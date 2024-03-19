@@ -1,5 +1,6 @@
 package rarekickz.rk_order_service.external.impl;
 
+import com.google.protobuf.Empty;
 import com.rarekickz.proto.lib.*;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import rarekickz.rk_order_service.domain.DeliveryInfo;
 import rarekickz.rk_order_service.domain.Order;
 import rarekickz.rk_order_service.domain.OrderInventory;
 import rarekickz.rk_order_service.dto.ExtendedSneakerDTO;
+import rarekickz.rk_order_service.dto.SneakerDTO;
+import rarekickz.rk_order_service.enums.OrderStatus;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
 import rarekickz.rk_order_service.service.OrderService;
 
@@ -47,6 +50,28 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
                         .build())
                 .build();
         responseObserver.onNext(orderResponse);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void finalizeOrder(final OrderRequest request, final StreamObserver<Empty> responseObserver) {
+        Order order = orderService.findByUuid(request.getOrderId());
+        order.setOrderStatus(OrderStatus.ORDER_PAID);
+        orderService.save(order);
+        responseObserver.onNext(Empty.getDefaultInstance());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void cancelOrder(final OrderRequest request, final StreamObserver<Empty> responseObserver) {
+        final Order order = orderService.findByUuid(request.getOrderId());
+        order.setOrderStatus(OrderStatus.ORDER_CANCELLED);
+        final List<SneakerDTO> sneakers = order.getOrderInventory().stream()
+                .map(orderInv -> new SneakerDTO(orderInv.getSneakerId(), orderInv.getSneakerSize()))
+                .toList();
+        externalSneakerService.cancel(sneakers);
+        orderService.save(order);
+        responseObserver.onNext(Empty.getDefaultInstance());
         responseObserver.onCompleted();
     }
 }

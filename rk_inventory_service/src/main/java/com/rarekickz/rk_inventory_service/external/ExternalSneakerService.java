@@ -47,6 +47,14 @@ public class ExternalSneakerService extends SneakerServiceGrpc.SneakerServiceImp
     }
 
     @Override
+    public void cancelReservation(ReserveSneakersRequest request, StreamObserver<Empty> responseObserver) {
+        final List<ReserveSneakerDTO> sneakersToBeCanceled = convertToReserveSneakerDTOs(request);
+        sneakerService.cancel(sneakersToBeCanceled);
+        responseObserver.onNext(Empty.newBuilder().build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getSneakerPrice(SneakerIdsRequest request, StreamObserver<OrderTotalPriceResponse> responseObserver) {
         Double totalPrice = sneakerService.getSneakerPrices(request.getSneakerIdList());
         OrderTotalPriceResponse totalPriceResponse = OrderTotalPriceResponse.newBuilder()

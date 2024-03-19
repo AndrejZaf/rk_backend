@@ -30,6 +30,8 @@ public interface SneakerService {
 
     void reserve(Collection<ReserveSneakerDTO> reservedSneakers);
 
+    void cancel(Collection<ReserveSneakerDTO> reservedSneakers);
+
     Double getSneakerPrices(Collection<Long> sneakerIds);
 
     List<Sneaker> findAllByIds(Collection<Long> sneakerIds);

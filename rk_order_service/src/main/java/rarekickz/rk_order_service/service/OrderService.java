@@ -8,4 +8,6 @@ public interface OrderService {
     String create(CreateOrderDTO createOrderDTO);
 
     Order findByUuid(String id);
+
+    Order save(Order order);
 }

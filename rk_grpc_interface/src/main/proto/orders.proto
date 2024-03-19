@@ -1,11 +1,15 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 option java_multiple_files = true;
 option java_package = "com.rarekickz.proto.lib";
 option java_outer_classname = "OrdersProto";
 
 service OrderService {
   rpc getOrderDetails(OrderRequest) returns (OrderResponse) {};
+  rpc finalizeOrder(OrderRequest) returns(google.protobuf.Empty) {};
+  rpc cancelOrder(OrderRequest) returns(google.protobuf.Empty) {};
 }
 
 message OrderRequest {
