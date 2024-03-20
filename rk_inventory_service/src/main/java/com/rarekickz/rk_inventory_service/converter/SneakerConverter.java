@@ -70,8 +70,8 @@ public class SneakerConverter {
 
     private static List<SneakerSizeDTO> convertToSneakerSizeDTO(final Collection<SneakerSize> sneakerSizes) {
         return sneakerSizes.stream()
-                .map(sneakerSize ->
-                        new SneakerSizeDTO(sneakerSize.getSneakerSizeId().getSize(), sneakerSize.getQuantity()))
+                .map(sneakerSize -> new SneakerSizeDTO(sneakerSize.getSneakerSizeId().getSize(), sneakerSize.getQuantity()))
+                .sorted(Comparator.comparing(SneakerSizeDTO::getSize))
                 .toList();
     }
 }

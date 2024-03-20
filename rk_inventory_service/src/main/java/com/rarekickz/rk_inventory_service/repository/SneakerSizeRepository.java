@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface SneakerSizeRepository extends JpaRepository<SneakerSize, SneakerSizeId> {
 
-    @Query("SELECT DISTINCT ss.sneakerSizeId.size FROM sneaker_size ss")
+    @Query("SELECT DISTINCT ss.sneakerSizeId.size FROM sneaker_size ss ORDER BY ss.sneakerSizeId.size ASC")
     List<Double> findAllDistinctSizes();
 }

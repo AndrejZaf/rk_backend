@@ -40,7 +40,7 @@ public class SneakerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SneakerDTO> getPremiumSneaker(@PathVariable Long id) {
+    public ResponseEntity<SneakerDTO> getSneaker(@PathVariable Long id) {
         final Sneaker sneaker = sneakerService.findById(id);
         return new ResponseEntity<>(convertToSneakerDTO(sneaker), HttpStatus.OK);
     }
