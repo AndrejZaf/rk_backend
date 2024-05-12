@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +20,8 @@ public class Brand {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Lob
+    @Column(name = "image_data")
+    private String imageData;
 }

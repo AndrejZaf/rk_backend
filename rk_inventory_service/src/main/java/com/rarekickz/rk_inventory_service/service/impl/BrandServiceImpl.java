@@ -4,6 +4,7 @@ import com.rarekickz.rk_inventory_service.domain.Brand;
 import com.rarekickz.rk_inventory_service.repository.BrandRepository;
 import com.rarekickz.rk_inventory_service.service.BrandService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
 
     @Override
+    @Transactional
     public List<Brand> findAll() {
         return brandRepository.findAllByOrderByNameAsc();
     }
