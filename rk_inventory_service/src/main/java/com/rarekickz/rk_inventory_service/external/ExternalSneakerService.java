@@ -3,8 +3,14 @@ package com.rarekickz.rk_inventory_service.external;
 import com.google.protobuf.Empty;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
-import com.rarekickz.proto.lib.*;
-import com.rarekickz.rk_inventory_service.domain.Brand;
+import com.rarekickz.proto.lib.ExtendedSneakerDetails;
+import com.rarekickz.proto.lib.ExtendedSneakerDetailsResponse;
+import com.rarekickz.proto.lib.OrderTotalPriceResponse;
+import com.rarekickz.proto.lib.ReserveSneakersRequest;
+import com.rarekickz.proto.lib.SneakerDetails;
+import com.rarekickz.proto.lib.SneakerDetailsResponse;
+import com.rarekickz.proto.lib.SneakerIdsRequest;
+import com.rarekickz.proto.lib.SneakerServiceGrpc;
 import com.rarekickz.rk_inventory_service.domain.Sneaker;
 import com.rarekickz.rk_inventory_service.dto.ReserveSneakerDTO;
 import com.rarekickz.rk_inventory_service.exception.InvalidSizeException;
@@ -50,7 +56,7 @@ public class ExternalSneakerService extends SneakerServiceGrpc.SneakerServiceImp
     }
 
     @Override
-    public void cancelReservation(ReserveSneakersRequest request, StreamObserver<Empty> responseObserver) {
+    public void cancelReservation(final ReserveSneakersRequest request, final StreamObserver<Empty> responseObserver) {
         final List<ReserveSneakerDTO> sneakersToBeCanceled = convertToReserveSneakerDTOs(request);
         sneakerService.cancel(sneakersToBeCanceled);
         responseObserver.onNext(Empty.newBuilder().build());
@@ -58,9 +64,10 @@ public class ExternalSneakerService extends SneakerServiceGrpc.SneakerServiceImp
     }
 
     @Override
-    public void getSneakerPrice(SneakerIdsRequest request, StreamObserver<OrderTotalPriceResponse> responseObserver) {
-        Double totalPrice = sneakerService.getSneakerPrices(request.getSneakerIdList());
-        OrderTotalPriceResponse totalPriceResponse = OrderTotalPriceResponse.newBuilder()
+    public void getSneakerPrice(final SneakerIdsRequest request,
+                                final StreamObserver<OrderTotalPriceResponse> responseObserver) {
+        final Double totalPrice = sneakerService.getSneakerPrices(request.getSneakerIdList());
+        final OrderTotalPriceResponse totalPriceResponse = OrderTotalPriceResponse.newBuilder()
                 .setPrice(totalPrice)
                 .build();
         responseObserver.onNext(totalPriceResponse);
@@ -68,7 +75,8 @@ public class ExternalSneakerService extends SneakerServiceGrpc.SneakerServiceImp
     }
 
     @Override
-    public void getSneakerDetails(final SneakerIdsRequest request, final StreamObserver<SneakerDetailsResponse> responseObserver) {
+    public void getSneakerDetails(final SneakerIdsRequest request,
+                                  final StreamObserver<SneakerDetailsResponse> responseObserver) {
         final List<Sneaker> sneakers = sneakerService.findAllByIds(request.getSneakerIdList());
         final List<SneakerDetails> sneakerDetails = sneakers.stream()
                 .map(sneaker -> SneakerDetails.newBuilder()
@@ -85,7 +93,8 @@ public class ExternalSneakerService extends SneakerServiceGrpc.SneakerServiceImp
     }
 
     @Override
-    public void getExtendedSneakerDetails(SneakerIdsRequest request, StreamObserver<ExtendedSneakerDetailsResponse> responseObserver) {
+    public void getExtendedSneakerDetails(final SneakerIdsRequest request,
+                                          final StreamObserver<ExtendedSneakerDetailsResponse> responseObserver) {
         final List<Sneaker> sneakers = sneakerService.findAllByIds(request.getSneakerIdList());
         final List<ExtendedSneakerDetails> sneakerDetails = sneakers.stream()
                 .map(sneaker -> ExtendedSneakerDetails.newBuilder()

@@ -16,7 +16,7 @@ import static com.rarekickz.rk_inventory_service.converter.BrandConverter.conver
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/inventory/brand")
+@RequestMapping("/api/inventory/brands")
 public class BrandController {
 
     private final BrandService brandService;

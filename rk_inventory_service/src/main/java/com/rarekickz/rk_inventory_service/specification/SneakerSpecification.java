@@ -14,21 +14,34 @@ import static java.util.Objects.nonNull;
 @UtilityClass
 public class SneakerSpecification {
 
-    public static Specification<Sneaker> createSneakerSpecification(List<Long> brandIds, List<Gender> genders, List<Double> sizes) {
+    public static Specification<Sneaker> createSneakerSpecification(final List<Long> brandIds,
+                                                                    final List<Gender> genders,
+                                                                    final List<Double> sizes) {
         return (root, query, criteriaBuilder) -> {
             final List<Predicate> predicates = new ArrayList<>();
             if (nonNull(sizes) && !sizes.isEmpty()) {
-                final Predicate sizesPredicate = root.join("sneakerSizes").get("sneakerSizeId").get("size").as(Double.class).in(sizes);
+                final Predicate sizesPredicate = root.join("sneakerSizes")
+                        .get("sneakerSizeId")
+                        .get("size")
+                        .as(Double.class)
+                        .in(sizes);
                 predicates.add(sizesPredicate);
             }
 
             if (nonNull(brandIds) && !brandIds.isEmpty()) {
-                final Predicate brandPredicate = root.get("brand").get("id").as(Long.class).in(brandIds);
+                final Predicate brandPredicate = root.get("brand")
+                        .get("id")
+                        .as(Long.class)
+                        .in(brandIds);
                 predicates.add(brandPredicate);
             }
 
             if (nonNull(genders) && !genders.isEmpty()) {
-                final Predicate genderPredicate = root.get("gender").as(String.class).in(genders.stream().map(Enum::toString).toList());
+                final Predicate genderPredicate = root.get("gender")
+                        .as(String.class)
+                        .in(genders.stream()
+                                .map(Enum::toString)
+                                .toList());
                 predicates.add(genderPredicate);
             }
 

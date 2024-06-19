@@ -26,7 +26,7 @@ import static com.rarekickz.rk_inventory_service.converter.SneakerConverter.conv
 import static com.rarekickz.rk_inventory_service.converter.SneakerConverter.convertToSneakerDTO;
 import static com.rarekickz.rk_inventory_service.converter.SneakerConverter.convertToSneakerDTOList;
 
-@RequestMapping("/api/inventory/sneaker")
+@RequestMapping("/api/inventory/sneakers")
 @RestController
 @RequiredArgsConstructor
 public class SneakerController {

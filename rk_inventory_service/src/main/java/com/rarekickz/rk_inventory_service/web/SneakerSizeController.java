@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/inventory/sneaker-size")
+@RequestMapping("/api/inventory/sneaker-sizes")
 public class SneakerSizeController {
 
     private final SneakerSizeService sneakerSizeService;

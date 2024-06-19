@@ -95,7 +95,7 @@ public class SneakerServiceImpl implements SneakerService {
     }
 
     @Override
-    public void cancel(Collection<ReserveSneakerDTO> reservedSneakers) {
+    public void cancel(final Collection<ReserveSneakerDTO> reservedSneakers) {
         final List<Long> sneakerIds = reservedSneakers.stream()
                 .map(ReserveSneakerDTO::getSneakerId)
                 .toList();
@@ -128,7 +128,9 @@ public class SneakerServiceImpl implements SneakerService {
 
     @Override
     @Transactional
-    public List<Sneaker> findAllByPages(final int page, final int size, final List<Long> brandIds, final List<Gender> genders, final List<Double> sizes) {
+    public List<Sneaker> findAllByPages(final int page, final int size, final List<Long> brandIds,
+                                        final List<Gender> genders,
+                                        final List<Double> sizes) {
         final PageRequest pageRequest = PageRequest.of(page, size);
         final Specification<Sneaker> sneakerSpecification = createSneakerSpecification(brandIds, genders, sizes);
         final Page<Sneaker> sneakers = sneakerRepository.findAll(sneakerSpecification, pageRequest);
@@ -137,8 +139,8 @@ public class SneakerServiceImpl implements SneakerService {
         final List<SneakerImage> sneakerImages = sneakerImageService.findAllBySneakerIds(sneakerIds);
         final Map<Long, Set<SneakerImage>> sneakerIdToSneakerImages = sneakerImages.stream()
                 .collect(groupingBy(sneakerImage -> sneakerImage.getSneaker().getId(), toSet()));
-        sneakers.stream()
-                .forEach(sneaker -> sneaker.setSneakerImages(sneakerIdToSneakerImages.getOrDefault(sneaker.getId(), Collections.emptySet())));
+        sneakers.stream().forEach(sneaker ->
+                sneaker.setSneakerImages(sneakerIdToSneakerImages.getOrDefault(sneaker.getId(), Collections.emptySet())));
         return sneakers.toList();
     }
 

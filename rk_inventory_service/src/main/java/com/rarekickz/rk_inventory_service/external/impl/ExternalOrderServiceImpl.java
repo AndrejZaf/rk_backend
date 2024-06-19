@@ -10,13 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExternalOrderServiceImpl implements ExternalOrderService {
 
-
     @GrpcClient("orderService")
     private OrderServiceGrpc.OrderServiceBlockingStub orderServiceBlockingStub;
 
     @Override
     public Long findMostPopularSneakerId() {
-        PopularSneakerResponse mostPopularSneakerResponse = orderServiceBlockingStub.findMostPopularSneaker(Empty.newBuilder().build());
+        final PopularSneakerResponse mostPopularSneakerResponse = orderServiceBlockingStub.findMostPopularSneaker(Empty.newBuilder().build());
         return mostPopularSneakerResponse.getSneakerId();
     }
 }
