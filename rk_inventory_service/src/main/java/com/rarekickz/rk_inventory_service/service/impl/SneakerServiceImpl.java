@@ -9,6 +9,7 @@ import com.rarekickz.rk_inventory_service.dto.SneakerDTO;
 import com.rarekickz.rk_inventory_service.enums.Gender;
 import com.rarekickz.rk_inventory_service.exception.InvalidSizeException;
 import com.rarekickz.rk_inventory_service.exception.InvalidSneakerException;
+import com.rarekickz.rk_inventory_service.external.ExternalOrderService;
 import com.rarekickz.rk_inventory_service.repository.SneakerRepository;
 import com.rarekickz.rk_inventory_service.service.BrandService;
 import com.rarekickz.rk_inventory_service.service.SneakerImageService;
@@ -37,11 +38,19 @@ public class SneakerServiceImpl implements SneakerService {
     private final SneakerImageService sneakerImageService;
     private final SneakerSizeService sneakerSizeService;
     private final BrandService brandService;
+    private final ExternalOrderService externalOrderService;
 
     @Override
     @Transactional
     public Sneaker findPremiumSneaker() {
         return sneakerRepository.findBySpecialIsTrue().orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    @Transactional
+    public Sneaker findMostPopularSneaker() {
+        Long sneakerId = externalOrderService.findMostPopularSneakerId();
+        return sneakerRepository.findByIdWithImages(sneakerId).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override

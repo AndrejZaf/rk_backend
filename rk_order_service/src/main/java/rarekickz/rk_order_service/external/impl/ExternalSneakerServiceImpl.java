@@ -6,6 +6,7 @@ import io.grpc.ManagedChannelBuilder;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 import rarekickz.rk_order_service.dto.ExtendedSneakerDTO;
+import rarekickz.rk_order_service.dto.ExtendedSneakerDetailsDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static rarekickz.rk_order_service.external.converter.SneakerDetailsConverter.convertToExtendedSneakerDTOList;
+import static rarekickz.rk_order_service.external.converter.SneakerDetailsConverter.convertToExtendedSneakerDetailsDTOList;
 
 @Service
 public class ExternalSneakerServiceImpl implements ExternalSneakerService {
@@ -65,5 +67,14 @@ public class ExternalSneakerServiceImpl implements ExternalSneakerService {
                 .build();
         final SneakerDetailsResponse sneakerDetailsResponse = sneakerServiceBlockingStub.getSneakerDetails(sneakerIdsRequest);
         return convertToExtendedSneakerDTOList(sneakerDetailsResponse.getSneakerDetailsList());
+    }
+
+    @Override
+    public List<ExtendedSneakerDetailsDTO> getExtendedSneakerDetails(List<Long> sneakerIds) {
+        final SneakerIdsRequest sneakerIdsRequest = SneakerIdsRequest.newBuilder()
+                .addAllSneakerId(sneakerIds)
+                .build();
+        final ExtendedSneakerDetailsResponse sneakerDetailsResponse = sneakerServiceBlockingStub.getExtendedSneakerDetails(sneakerIdsRequest);
+        return convertToExtendedSneakerDetailsDTOList(sneakerDetailsResponse.getSneakerDetailsList());
     }
 }

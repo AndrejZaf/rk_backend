@@ -6,8 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import rarekickz.rk_order_service.enums.OrderStatus;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,4 +43,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<OrderInventory> orderInventory;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 }

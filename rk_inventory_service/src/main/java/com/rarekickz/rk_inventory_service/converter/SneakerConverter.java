@@ -22,6 +22,7 @@ public class SneakerConverter {
                 .description(sneaker.getDescription())
                 .name(sneaker.getName())
                 .images(convertToStringImages(sneaker.getSneakerImages()))
+                .price(sneaker.getPrice())
                 .build();
     }
 

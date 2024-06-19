@@ -13,4 +13,8 @@ public interface OrderInventoryService {
     Set<OrderInventory> save(Collection<SneakerDTO> sneakers, Order order);
 
     List<OrderInventory> findAllByOrderId(String orderId);
+
+    Long findMostPopularSneaker();
+
+    List<OrderInventory> findAllInLastWeek();
 }

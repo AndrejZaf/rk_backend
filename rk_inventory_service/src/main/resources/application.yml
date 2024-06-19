@@ -16,7 +16,10 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-logging:
-  level:
-    io:
-      grpc: DEBUG
+grpc:
+  client:
+    orderService:
+      address: 'static://localhost:9091'
+      enable-keep-alive: true
+      keep-alive-without-calls: true
+      negotiation-type: plaintext

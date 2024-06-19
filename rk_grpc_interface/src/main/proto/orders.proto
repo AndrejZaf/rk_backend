@@ -10,10 +10,15 @@ service OrderService {
   rpc getOrderDetails(OrderRequest) returns (OrderResponse) {};
   rpc finalizeOrder(OrderRequest) returns(google.protobuf.Empty) {};
   rpc cancelOrder(OrderRequest) returns(google.protobuf.Empty) {};
+  rpc findMostPopularSneaker(google.protobuf.Empty) returns (PopularSneakerResponse) {};
 }
 
 message OrderRequest {
   string orderId = 1;
+}
+
+message PopularSneakerResponse {
+  int64 sneakerId = 1;
 }
 
 message OrderResponse {

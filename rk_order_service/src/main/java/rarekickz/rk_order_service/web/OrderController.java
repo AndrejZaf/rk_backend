@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import rarekickz.rk_order_service.domain.Order;
 import rarekickz.rk_order_service.domain.OrderInventory;
 import rarekickz.rk_order_service.dto.CreateOrderDTO;
+import rarekickz.rk_order_service.dto.OrderDTO;
 import rarekickz.rk_order_service.dto.OrderIdentifierDTO;
 import rarekickz.rk_order_service.dto.OrderInventoryDTO;
 import rarekickz.rk_order_service.dto.OrderPreviewDTO;
+import rarekickz.rk_order_service.dto.SaleDTO;
 import rarekickz.rk_order_service.service.OrderInventoryService;
 import rarekickz.rk_order_service.service.OrderService;
 
@@ -22,6 +24,26 @@ public class OrderController {
 
     private final OrderService orderService;
     private final OrderInventoryService orderInventoryService;
+
+    @GetMapping
+    public ResponseEntity<List<OrderDTO>> getOrders() {
+        final List<OrderDTO> orders = orderService.findAll().stream()
+                .map(order -> OrderDTO.builder()
+                        .id(order.getId())
+                        .totalPrice(order.getTotalPrice())
+                        .orderStatus(order.getOrderStatus())
+                        .email(order.getDeliveryInfo().getEmail())
+                        .address(order.getDeliveryInfo().getStreet())
+                        .build())
+                .toList();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<List<SaleDTO>> getOrdersStatistics() {
+        List<SaleDTO> sales = orderService.generateStatistics();
+        return new ResponseEntity<>(sales, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<OrderIdentifierDTO> createOrder(@RequestBody final CreateOrderDTO createOrderDTO) {

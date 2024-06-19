@@ -39,6 +39,12 @@ public class SneakerController {
         return new ResponseEntity<>(convertPremiumSneaker(sneaker), HttpStatus.OK);
     }
 
+    @GetMapping("/popular")
+    public ResponseEntity<SneakerDTO> getMostPopularSneaker() {
+        final Sneaker sneaker = sneakerService.findMostPopularSneaker();
+        return new ResponseEntity<>(convertPremiumSneaker(sneaker), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<SneakerDTO> getSneaker(@PathVariable Long id) {
         final Sneaker sneaker = sneakerService.findById(id);

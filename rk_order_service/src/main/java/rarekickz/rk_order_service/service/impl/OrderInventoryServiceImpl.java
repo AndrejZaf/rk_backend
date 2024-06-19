@@ -8,6 +8,7 @@ import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.repository.OrderInventoryRepository;
 import rarekickz.rk_order_service.service.OrderInventoryService;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -35,5 +36,15 @@ public class OrderInventoryServiceImpl implements OrderInventoryService {
     @Override
     public List<OrderInventory> findAllByOrderId(String orderId) {
         return orderInventoryRepository.findByOrderUuid(UUID.fromString(orderId));
+    }
+
+    @Override
+    public Long findMostPopularSneaker() {
+        return orderInventoryRepository.findByMostPopularSneaker();
+    }
+
+    @Override
+    public List<OrderInventory> findAllInLastWeek() {
+        return orderInventoryRepository.findAllByCreatedAtAfter(LocalDateTime.now().minusWeeks(1));
     }
 }

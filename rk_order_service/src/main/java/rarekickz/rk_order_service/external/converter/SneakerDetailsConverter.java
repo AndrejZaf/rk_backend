@@ -1,8 +1,10 @@
 package rarekickz.rk_order_service.external.converter;
 
+import com.rarekickz.proto.lib.ExtendedSneakerDetails;
 import com.rarekickz.proto.lib.SneakerDetails;
 import lombok.experimental.UtilityClass;
 import rarekickz.rk_order_service.dto.ExtendedSneakerDTO;
+import rarekickz.rk_order_service.dto.ExtendedSneakerDetailsDTO;
 
 import java.util.List;
 
@@ -15,7 +17,17 @@ public class SneakerDetailsConverter {
                 .toList();
     }
 
+    public static List<ExtendedSneakerDetailsDTO> convertToExtendedSneakerDetailsDTOList(List<ExtendedSneakerDetails> sneakerDetails) {
+        return sneakerDetails.stream()
+                .map(SneakerDetailsConverter::convertToExtendedSneakerDetailsDTO)
+                .toList();
+    }
+
     private static ExtendedSneakerDTO convertToExtendedSneakerDTO(SneakerDetails sneakerDetails) {
         return new ExtendedSneakerDTO(sneakerDetails.getId(), sneakerDetails.getName(), sneakerDetails.getPrice());
+    }
+
+    private static ExtendedSneakerDetailsDTO convertToExtendedSneakerDetailsDTO(ExtendedSneakerDetails sneakerDetails) {
+        return new ExtendedSneakerDetailsDTO(sneakerDetails.getId(), sneakerDetails.getName(), sneakerDetails.getPrice(), sneakerDetails.getBrandName());
     }
 }

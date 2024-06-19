@@ -4,10 +4,12 @@ import com.google.protobuf.Empty;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import com.rarekickz.proto.lib.*;
+import com.rarekickz.rk_inventory_service.domain.Brand;
 import com.rarekickz.rk_inventory_service.domain.Sneaker;
 import com.rarekickz.rk_inventory_service.dto.ReserveSneakerDTO;
 import com.rarekickz.rk_inventory_service.exception.InvalidSizeException;
 import com.rarekickz.rk_inventory_service.exception.InvalidSneakerException;
+import com.rarekickz.rk_inventory_service.service.BrandService;
 import com.rarekickz.rk_inventory_service.service.SneakerService;
 import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
@@ -23,6 +25,7 @@ import static com.rarekickz.rk_inventory_service.external.converter.ExternalSnea
 public class ExternalSneakerService extends SneakerServiceGrpc.SneakerServiceImplBase {
 
     private final SneakerService sneakerService;
+    private final BrandService brandService;
 
     @Override
     public void reserve(final ReserveSneakersRequest request, final StreamObserver<Empty> responseObserver) {
@@ -75,6 +78,24 @@ public class ExternalSneakerService extends SneakerServiceGrpc.SneakerServiceImp
                         .build())
                 .toList();
         final SneakerDetailsResponse sneakerDetailsResponse = SneakerDetailsResponse.newBuilder()
+                .addAllSneakerDetails(sneakerDetails)
+                .build();
+        responseObserver.onNext(sneakerDetailsResponse);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getExtendedSneakerDetails(SneakerIdsRequest request, StreamObserver<ExtendedSneakerDetailsResponse> responseObserver) {
+        final List<Sneaker> sneakers = sneakerService.findAllByIds(request.getSneakerIdList());
+        final List<ExtendedSneakerDetails> sneakerDetails = sneakers.stream()
+                .map(sneaker -> ExtendedSneakerDetails.newBuilder()
+                        .setPrice(sneaker.getPrice())
+                        .setName(sneaker.getName())
+                        .setId(sneaker.getId())
+                        .setBrandName(sneaker.getBrand().getName())
+                        .build())
+                .toList();
+        final ExtendedSneakerDetailsResponse sneakerDetailsResponse = ExtendedSneakerDetailsResponse.newBuilder()
                 .addAllSneakerDetails(sneakerDetails)
                 .build();
         responseObserver.onNext(sneakerDetailsResponse);

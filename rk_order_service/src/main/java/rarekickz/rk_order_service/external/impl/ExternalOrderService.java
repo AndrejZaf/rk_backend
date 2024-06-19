@@ -12,6 +12,7 @@ import rarekickz.rk_order_service.dto.ExtendedSneakerDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.enums.OrderStatus;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
+import rarekickz.rk_order_service.service.OrderInventoryService;
 import rarekickz.rk_order_service.service.OrderService;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
 
     private final OrderService orderService;
     private final ExternalSneakerService externalSneakerService;
+    private final OrderInventoryService orderInventoryService;
 
     @Override
     public void getOrderDetails(final OrderRequest request, final StreamObserver<OrderResponse> responseObserver) {
@@ -42,9 +44,9 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
         final OrderResponse orderResponse = OrderResponse.newBuilder()
                 .setCustomerDetailsResponse(
                         CustomerDetailsResponse.newBuilder()
-                        .setEmail(deliveryInfo.getEmail())
-                        .setName(String.format("%s %s", deliveryInfo.getFirstName(), deliveryInfo.getLastName()))
-                        .build())
+                                .setEmail(deliveryInfo.getEmail())
+                                .setName(String.format("%s %s", deliveryInfo.getFirstName(), deliveryInfo.getLastName()))
+                                .build())
                 .setSelectedProductResponse(SelectedProductsResponse.newBuilder()
                         .addAllProducts(products)
                         .build())
@@ -72,6 +74,16 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
         externalSneakerService.cancel(sneakers);
         orderService.save(order);
         responseObserver.onNext(Empty.getDefaultInstance());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void findMostPopularSneaker(Empty request, StreamObserver<PopularSneakerResponse> responseObserver) {
+        Long mostPopularSneakerId = orderInventoryService.findMostPopularSneaker();
+        PopularSneakerResponse popularSneakerResponse = PopularSneakerResponse.newBuilder()
+                .setSneakerId(mostPopularSneakerId)
+                .build();
+        responseObserver.onNext(popularSneakerResponse);
         responseObserver.onCompleted();
     }
 }

@@ -11,6 +11,7 @@ service SneakerService {
   rpc cancelReservation(ReserveSneakersRequest) returns (google.protobuf.Empty) {};
   rpc getSneakerPrice(SneakerIdsRequest) returns (OrderTotalPriceResponse) {};
   rpc getSneakerDetails(SneakerIdsRequest) returns (SneakerDetailsResponse) {};
+  rpc getExtendedSneakerDetails(SneakerIdsRequest) returns (ExtendedSneakerDetailsResponse) {};
 }
 
 message ReserveSneakersRequest {
@@ -28,6 +29,17 @@ message SneakerIdsRequest {
 
 message SneakerDetailsResponse {
   repeated SneakerDetails sneakerDetails = 1;
+}
+
+message ExtendedSneakerDetailsResponse {
+  repeated ExtendedSneakerDetails sneakerDetails = 1;
+}
+
+message ExtendedSneakerDetails {
+  int64 id = 1;
+  string name = 2;
+  double price = 3;
+  string brandName = 4;
 }
 
 message SneakerDetails {
