@@ -6,6 +6,7 @@ import com.rarekickz.rk_inventory_service.dto.SneakerDTO;
 import com.rarekickz.rk_inventory_service.enums.Gender;
 import com.rarekickz.rk_inventory_service.service.SneakerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,33 +27,38 @@ import static com.rarekickz.rk_inventory_service.converter.SneakerConverter.conv
 import static com.rarekickz.rk_inventory_service.converter.SneakerConverter.convertToSneakerDTO;
 import static com.rarekickz.rk_inventory_service.converter.SneakerConverter.convertToSneakerDTOList;
 
-@RequestMapping("/api/inventory/sneakers")
+@Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/inventory/sneakers")
 public class SneakerController {
 
     private final SneakerService sneakerService;
 
     @GetMapping("/premium")
     public ResponseEntity<SneakerDTO> getPremiumSneaker() {
+        log.info("Received request to get the premium sneaker");
         final Sneaker sneaker = sneakerService.findPremiumSneaker();
         return new ResponseEntity<>(convertPremiumSneaker(sneaker), HttpStatus.OK);
     }
 
     @GetMapping("/popular")
     public ResponseEntity<SneakerDTO> getMostPopularSneaker() {
+        log.info("Received request to get the most popular sneaker");
         final Sneaker sneaker = sneakerService.findMostPopularSneaker();
         return new ResponseEntity<>(convertPremiumSneaker(sneaker), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SneakerDTO> getSneaker(@PathVariable Long id) {
+        log.info("Received request to get sneaker by ID: [{}]", id);
         final Sneaker sneaker = sneakerService.findById(id);
         return new ResponseEntity<>(convertToSneakerDTO(sneaker), HttpStatus.OK);
     }
 
     @GetMapping("/cart")
     public ResponseEntity<List<SneakerCartDTO>> getSneakerForCart(@RequestParam List<Long> ids) {
+        log.info("Received request to get sneakers for cart by IDs: [{}]", ids);
         final List<Sneaker> sneakers = sneakerService.findAllByIdWithImages(ids);
         return new ResponseEntity<>(convertToSneakerCartDTOs(sneakers), HttpStatus.OK);
     }
@@ -61,36 +67,42 @@ public class SneakerController {
     public ResponseEntity<List<SneakerDTO>> getSneakers(@RequestParam int page, @RequestParam int size,
                                                         @RequestParam(required = false) List<Long> brandIds, @RequestParam(required = false) List<Double> sizes,
                                                         @RequestParam(required = false) List<Gender> genders) {
+        log.info("Received request to get sneakers by page: [{}], size: [{}], brandIds: [{}], genders: [{}], sizes: [{}]", page, size, brandIds, genders, sizes);
         final List<Sneaker> sneakers = sneakerService.findAllByPages(page, size, brandIds, genders, sizes);
         return new ResponseEntity<>(convertToSneakerDTOList(sneakers), HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<SneakerDTO>> getSneakers() {
+        log.info("Received request to get all sneakers");
         final List<Sneaker> sneakers = sneakerService.findAll();
         return new ResponseEntity<>(convertToSneakerDTOList(sneakers), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<SneakerDTO> addSneaker(@RequestBody final SneakerDTO sneakerDTO) {
+        log.info("Received request to add sneaker");
         final Sneaker sneaker = sneakerService.create(sneakerDTO);
         return new ResponseEntity<>(convertToSneakerDTO(sneaker), HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<SneakerDTO> editSneaker(@RequestBody final SneakerDTO sneakerDTO) {
+        log.info("Received request to edit sneaker");
         final Sneaker sneaker = sneakerService.update(sneakerDTO);
         return new ResponseEntity<>(convertToSneakerDTO(sneaker), HttpStatus.OK);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteSneaker(@RequestParam("id") final Long sneakerId) {
+        log.info("Received request to delete sneaker by ID: [{}]", sneakerId);
         sneakerService.deleteById(sneakerId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PatchMapping
     public ResponseEntity<Long> premiumSneaker(@RequestParam("id") final Long sneakerId) {
+        log.info("Received request to set a new premium sneaker with ID: [{}]", sneakerId);
         sneakerService.premium(sneakerId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

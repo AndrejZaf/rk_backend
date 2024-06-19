@@ -6,6 +6,7 @@ import com.rarekickz.rk_inventory_service.dto.SneakerSizeDTO;
 import com.rarekickz.rk_inventory_service.repository.SneakerSizeRepository;
 import com.rarekickz.rk_inventory_service.service.SneakerSizeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SneakerSizeServiceImpl implements SneakerSizeService {
@@ -21,6 +23,7 @@ public class SneakerSizeServiceImpl implements SneakerSizeService {
 
     @Override
     public List<Double> findAllDistinctSizes() {
+        log.debug("Retrieving all distinct sneaker sizes from the database");
         return sneakerSizeRepository.findAllDistinctSizes();
     }
 
