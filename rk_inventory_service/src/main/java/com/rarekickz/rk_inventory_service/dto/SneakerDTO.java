@@ -12,22 +12,13 @@ import java.util.List;
 public class SneakerDTO {
 
     private Long id;
-
     private Long brandId;
-
     private Integer gender;
-
     private String name;
-
     private String description;
-
     private Double price;
-
     private List<String> images;
-
     private List<SneakerSizeDTO> sizes;
-
     private String brand;
-
     private Boolean special;
 }

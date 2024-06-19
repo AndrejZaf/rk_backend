@@ -17,6 +17,7 @@ import com.rarekickz.rk_inventory_service.service.SneakerService;
 import com.rarekickz.rk_inventory_service.service.SneakerSizeService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 import static com.rarekickz.rk_inventory_service.specification.SneakerSpecification.createSneakerSpecification;
 import static java.util.stream.Collectors.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SneakerServiceImpl implements SneakerService {
@@ -43,12 +45,14 @@ public class SneakerServiceImpl implements SneakerService {
     @Override
     @Transactional
     public Sneaker findPremiumSneaker() {
+        log.debug("Retrieving premium sneaker from database");
         return sneakerRepository.findBySpecialIsTrue().orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     @Transactional
     public Sneaker findMostPopularSneaker() {
+        log.debug("Retrieving most popular sneaker from database");
         Long sneakerId = externalOrderService.findMostPopularSneakerId();
         return sneakerRepository.findByIdWithImages(sneakerId).orElseThrow(EntityNotFoundException::new);
     }
@@ -56,22 +60,25 @@ public class SneakerServiceImpl implements SneakerService {
     @Override
     @Transactional
     public Sneaker findById(final Long sneakerId) {
+        log.debug("Retrieving sneaker by ID: [{}]", sneakerId);
         return sneakerRepository.findByIdWithImages(sneakerId).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     @Transactional
     public List<Sneaker> findAllByIdWithImages(final List<Long> sneakerIds) {
+        log.debug("Retrieving sneakers by IDs: [{}]", sneakerIds);
         return sneakerRepository.findAllByIdWithImages(sneakerIds);
     }
 
     @Override
     public void reserve(final Collection<ReserveSneakerDTO> reservedSneakers) {
-        final Map<Long, ReserveSneakerDTO> sneakerIdToSizes = reservedSneakers.stream()
-                .collect(Collectors.toMap(ReserveSneakerDTO::getSneakerId, Function.identity()));
         final List<Long> sneakerIds = reservedSneakers.stream()
                 .map(ReserveSneakerDTO::getSneakerId)
                 .toList();
+        log.debug("Reserving sneakers by IDs: [{}]", sneakerIds);
+        final Map<Long, ReserveSneakerDTO> sneakerIdToSizes = reservedSneakers.stream()
+                .collect(Collectors.toMap(ReserveSneakerDTO::getSneakerId, Function.identity()));
         final List<Sneaker> sneakers = sneakerRepository.findAllWithSizes(sneakerIds);
         sneakerIds.forEach(sneakerId -> {
             if (sneakers.stream().noneMatch(sneaker -> sneaker.getId().equals(sneakerId))) {
@@ -99,6 +106,7 @@ public class SneakerServiceImpl implements SneakerService {
         final List<Long> sneakerIds = reservedSneakers.stream()
                 .map(ReserveSneakerDTO::getSneakerId)
                 .toList();
+        log.debug("Cancelling order for sneakers with IDs: [{}]", sneakerIds);
         final Map<Long, ReserveSneakerDTO> sneakerIdToSizes = reservedSneakers.stream()
                 .collect(Collectors.toMap(ReserveSneakerDTO::getSneakerId, Function.identity()));
         final List<Sneaker> sneakers = sneakerRepository.findAllWithSizes(sneakerIds);
@@ -114,6 +122,7 @@ public class SneakerServiceImpl implements SneakerService {
 
     @Override
     public Double getSneakerPrices(final Collection<Long> sneakerIds) {
+        log.debug("Retrieving sneakers prices by sneaker IDs: [{}]", sneakerIds);
         final List<Sneaker> sneakers = sneakerRepository.findAllById(sneakerIds);
         return sneakers.stream()
                 .map(Sneaker::getPrice)
@@ -123,6 +132,7 @@ public class SneakerServiceImpl implements SneakerService {
 
     @Override
     public List<Sneaker> findAllByIds(final Collection<Long> sneakerIds) {
+        log.debug("Retrieving sneakers by IDs: [{}]", sneakerIds);
         return sneakerRepository.findAllById(sneakerIds);
     }
 
@@ -131,6 +141,8 @@ public class SneakerServiceImpl implements SneakerService {
     public List<Sneaker> findAllByPages(final int page, final int size, final List<Long> brandIds,
                                         final List<Gender> genders,
                                         final List<Double> sizes) {
+        log.debug("Retrieving sneakers from database by page: [{}], size: [{}], brandIds: [{}], genders: [{}], sizes: [{}]",
+                page, size, brandIds, genders, sizes);
         final PageRequest pageRequest = PageRequest.of(page, size);
         final Specification<Sneaker> sneakerSpecification = createSneakerSpecification(brandIds, genders, sizes);
         final Page<Sneaker> sneakers = sneakerRepository.findAll(sneakerSpecification, pageRequest);
@@ -147,6 +159,7 @@ public class SneakerServiceImpl implements SneakerService {
     @Override
     @Transactional
     public Sneaker create(final SneakerDTO sneakerDTO) {
+        log.debug("Creating a new sneaker with name: [{}]", sneakerDTO.getName());
         final Brand brand = brandService.findById(sneakerDTO.getBrandId());
         final Sneaker sneaker = sneakerRepository.save(createSneaker(sneakerDTO, brand));
         final Set<SneakerImage> sneakerImages = sneakerImageService.create(sneakerDTO.getImages(), sneaker);
@@ -159,6 +172,7 @@ public class SneakerServiceImpl implements SneakerService {
     @Override
     @Transactional
     public Sneaker update(final SneakerDTO sneakerDTO) {
+        log.debug("Updating sneaker with ID [{}]", sneakerDTO.getId());
         final Brand brand = brandService.findById(sneakerDTO.getBrandId());
         Sneaker sneaker = sneakerRepository
                 .findById(sneakerDTO.getId()).orElseThrow(EntityNotFoundException::new);
@@ -174,6 +188,7 @@ public class SneakerServiceImpl implements SneakerService {
     @Override
     @Transactional
     public void deleteById(final Long sneakerId) {
+        log.debug("Deleting sneaker with ID [{}]", sneakerId);
         final Sneaker sneaker = sneakerRepository.findById(sneakerId).orElseThrow(EntityNotFoundException::new);
         sneakerSizeService.delete(sneaker.getSneakerSizes());
         sneakerImageService.delete(sneaker.getSneakerImages());
@@ -182,6 +197,7 @@ public class SneakerServiceImpl implements SneakerService {
 
     @Override
     public void premium(final Long sneakerId) {
+        log.debug("Setting sneaker with ID [{}] as premium", sneakerId);
         final Sneaker newSpecialSneaker = sneakerRepository.findById(sneakerId).orElseThrow(EntityNotFoundException::new);
         if (newSpecialSneaker.isSpecial()) {
             return;
@@ -202,6 +218,7 @@ public class SneakerServiceImpl implements SneakerService {
     @Override
     @Transactional
     public List<Sneaker> findAll() {
+        log.debug("Retrieving all sneakers with their images from the database");
         return sneakerRepository.findAllSneakersWithImages();
     }
 

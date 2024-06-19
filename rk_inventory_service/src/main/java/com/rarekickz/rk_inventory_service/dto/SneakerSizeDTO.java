@@ -8,6 +8,5 @@ import lombok.Data;
 public class SneakerSizeDTO {
 
     private Double size;
-
     private Long quantity;
 }

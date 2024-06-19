@@ -29,6 +29,7 @@ public class SneakerSizeServiceImpl implements SneakerSizeService {
 
     @Override
     public Set<SneakerSize> create(final Sneaker sneaker, final Collection<SneakerSizeDTO> sneakerSizes) {
+        log.debug("Creating sneaker sizes for sneaker with ID: [{}]", sneaker.getId());
         final List<SneakerSize> sneakerSizeCollection = sneakerSizes.stream()
                 .map(sneakerSize -> new SneakerSize(sneaker, sneakerSize.getSize(), sneakerSize.getQuantity()))
                 .toList();
@@ -37,6 +38,7 @@ public class SneakerSizeServiceImpl implements SneakerSizeService {
 
     @Override
     public void delete(final Collection<SneakerSize> sneakerSizes) {
+        log.debug("Deleting sneaker sizes from the database");
         sneakerSizeRepository.deleteAll(sneakerSizes);
         sneakerSizeRepository.flush();
     }
