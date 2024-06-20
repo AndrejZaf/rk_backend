@@ -1,10 +1,12 @@
 package rarekickz.rk_order_service.web;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import rarekickz.rk_order_service.converter.OrderConverter;
 import rarekickz.rk_order_service.domain.Order;
 import rarekickz.rk_order_service.domain.OrderInventory;
 import rarekickz.rk_order_service.dto.CreateOrderDTO;
@@ -18,6 +20,11 @@ import rarekickz.rk_order_service.service.OrderService;
 
 import java.util.List;
 
+import static rarekickz.rk_order_service.converter.OrderConverter.toOrderDTO;
+import static rarekickz.rk_order_service.converter.OrderConverter.toOrderDTOList;
+import static rarekickz.rk_order_service.converter.OrderConverter.toOrderPreviewDTO;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/order")
@@ -29,28 +36,23 @@ public class OrderController {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<OrderDTO>> getOrders() {
-        final List<OrderDTO> orders = orderService.findAll().stream()
-                .map(order -> OrderDTO.builder()
-                        .id(order.getId())
-                        .totalPrice(order.getTotalPrice())
-                        .orderStatus(order.getOrderStatus())
-                        .email(order.getDeliveryInfo().getEmail())
-                        .address(order.getDeliveryInfo().getStreet())
-                        .build())
-                .toList();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        log.info("Received a request to get all orders");
+        final List<Order> orders = orderService.findAll();
+        return new ResponseEntity<>(toOrderDTOList(orders), HttpStatus.OK);
     }
 
     @GetMapping("/statistics")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<SaleDTO>> getOrdersStatistics() {
-        List<SaleDTO> sales = orderService.generateStatistics();
+        log.info("Received a request to get orders statistics");
+        final List<SaleDTO> sales = orderService.generateStatistics();
         return new ResponseEntity<>(sales, HttpStatus.OK);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<OrderIdentifierDTO> createOrder(@RequestBody final CreateOrderDTO createOrderDTO) {
+        log.info("Received a request to create an order");
         final String paymentSession = orderService.create(createOrderDTO);
         return new ResponseEntity<>(new OrderIdentifierDTO(paymentSession), HttpStatus.OK);
     }
@@ -58,17 +60,12 @@ public class OrderController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<OrderPreviewDTO> fetchOrder(@PathVariable final String id) {
+        log.info("Received a request to fetch an order by ID: [{}]", id);
         final Order order = orderService.findByUuid(id);
         final List<OrderInventory> orderInventoryList = orderInventoryService.findAllByOrderId(id);
         final List<OrderInventoryDTO> orderInventoryDTOs = orderInventoryList.stream()
                 .map(orderInventory -> new OrderInventoryDTO(orderInventory.getSneakerId(), orderInventory.getSneakerSize()))
                 .toList();
-        final OrderPreviewDTO orderPreviewDTO = OrderPreviewDTO.builder()
-                .orderStatus(order.getOrderStatus())
-                .uuid(order.getUuid().toString())
-                .orderPrice(order.getTotalPrice())
-                .orderInventory(orderInventoryDTOs)
-                .build();
-        return new ResponseEntity<>(orderPreviewDTO, HttpStatus.OK);
+        return new ResponseEntity<>(toOrderPreviewDTO(order, orderInventoryDTOs), HttpStatus.OK);
     }
 }

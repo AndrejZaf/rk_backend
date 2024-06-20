@@ -10,13 +10,13 @@ import java.util.List;
 @UtilityClass
 public class ExternalSneakerConverter {
 
-    public static List<ReserveSneakerDTO> convertToReserveSneakerDTOs(ReserveSneakersRequest reserveSneakersRequest) {
+    public static List<ReserveSneakerDTO> convertToReserveSneakerDTOs(final ReserveSneakersRequest reserveSneakersRequest) {
         return reserveSneakersRequest.getSneakersList().stream()
                 .map(ExternalSneakerConverter::convertToReserveSneakerDTO)
                 .toList();
     }
 
-    public static ReserveSneakerDTO convertToReserveSneakerDTO(SneakerRequest sneakerRequest) {
+    public static ReserveSneakerDTO convertToReserveSneakerDTO(final SneakerRequest sneakerRequest) {
         return new ReserveSneakerDTO(sneakerRequest.getSneakerId(), sneakerRequest.getSneakerSize());
     }
 }

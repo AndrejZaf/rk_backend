@@ -40,7 +40,6 @@ public class Order {
     @JoinColumn(name = "delivery_info_id", referencedColumnName = "id")
     private DeliveryInfo deliveryInfo;
 
-
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<OrderInventory> orderInventory;
 

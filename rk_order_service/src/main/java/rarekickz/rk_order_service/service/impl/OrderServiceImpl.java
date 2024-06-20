@@ -2,6 +2,7 @@ package rarekickz.rk_order_service.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import rarekickz.rk_order_service.domain.DeliveryInfo;
 import rarekickz.rk_order_service.domain.Order;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -41,11 +43,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findAll() {
+        log.debug("Retrieving all orders from the database");
         return orderRepository.findAll();
     }
 
     @Override
     public String create(final CreateOrderDTO createOrderDTO) {
+        log.debug("Creating new order");
         externalSneakerService.reserve(createOrderDTO.getSneakers());
         final DeliveryInfo deliveryInfo = deliveryInfoService.save(createOrderDTO.getDeliveryInfo());
         Order order = createOrder(createOrderDTO);
@@ -57,32 +61,35 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findByUuid(final String id) {
+        log.debug("Retrieving order from the database by ID: [{}]", id);
         return orderRepository.findByUuid(UUID.fromString(id))
                 .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public Order save(final Order order) {
+        log.debug("Saving order to the database");
         return orderRepository.save(order);
     }
 
     @Override
     public List<SaleDTO> generateStatistics() {
-        List<OrderInventory> orderInventoryList = orderInventoryService.findAllInLastWeek();
-        List<Long> sneakerIds = orderInventoryList.stream().map(OrderInventory::getSneakerId).toList();
-        List<ExtendedSneakerDetailsDTO> extendedSneakerDetails = externalSneakerService.getExtendedSneakerDetails(sneakerIds);
-        Map<Long, ExtendedSneakerDetailsDTO> sneakerIdToDetails = extendedSneakerDetails.stream().collect(Collectors.toMap(ExtendedSneakerDetailsDTO::getId, Function.identity()));
-        Map<String, Map<LocalDate, List<OrderInventory>>> brandToSalesPerDate = orderInventoryList.stream()
+        log.debug("Generating statistics");
+        final List<OrderInventory> orderInventoryList = orderInventoryService.findAllInLastWeek();
+        final List<Long> sneakerIds = orderInventoryList.stream().map(OrderInventory::getSneakerId).toList();
+        final List<ExtendedSneakerDetailsDTO> extendedSneakerDetails = externalSneakerService.getExtendedSneakerDetails(sneakerIds);
+        final Map<Long, ExtendedSneakerDetailsDTO> sneakerIdToDetails = extendedSneakerDetails.stream()
+                .collect(Collectors.toMap(ExtendedSneakerDetailsDTO::getId, Function.identity()));
+        final Map<String, Map<LocalDate, List<OrderInventory>>> brandToSalesPerDate = orderInventoryList.stream()
                 .collect(Collectors.groupingBy(orderInventory -> {
                     ExtendedSneakerDetailsDTO extendedSneakerDetailsDTO = sneakerIdToDetails.get(orderInventory.getSneakerId());
                     return extendedSneakerDetailsDTO.getBrandName();
                 }, Collectors.groupingBy(orderInventory -> orderInventory.getCreatedAt().toLocalDate())));
-
-        List<SaleDTO> totalSales = new ArrayList<>();
+        final List<SaleDTO> totalSales = new ArrayList<>();
         brandToSalesPerDate.forEach((brandName, salesPerDate) -> {
-            SaleDTO sales = new SaleDTO(brandName, new ArrayList<>());
+            final SaleDTO sales = new SaleDTO(brandName, new ArrayList<>());
             salesPerDate.forEach((localDate, orderInventories) -> {
-                InventorySaleDTO inventorySaleDTO = new InventorySaleDTO((long) orderInventories.size(), localDate.toString());
+                final InventorySaleDTO inventorySaleDTO = new InventorySaleDTO((long) orderInventories.size(), localDate.toString());
                 sales.getSeries().add(inventorySaleDTO);
             });
             totalSales.add(sales);
