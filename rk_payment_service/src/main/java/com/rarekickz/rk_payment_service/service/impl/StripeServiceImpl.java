@@ -11,17 +11,17 @@ import com.stripe.model.WebhookEndpoint;
 import com.stripe.model.WebhookEndpointCollection;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.CustomerCreateParams;
-import com.stripe.param.InvoiceCreateParams;
-import com.stripe.param.PaymentLinkCreateParams;
 import com.stripe.param.WebhookEndpointCreateParams;
 import com.stripe.param.WebhookEndpointListParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StripeServiceImpl implements StripeService {
@@ -36,32 +36,31 @@ public class StripeServiceImpl implements StripeService {
     private final PaymentSessionService paymentSessionService;
 
     @Override
-    public Session generateSession(String orderId) throws StripeException {
-        OrderDetailsDTO orderDetails = externalOrderService.getOrderDetails(orderId);
+    public Session generateSession(final String orderId) throws StripeException {
+        log.debug("Creating a stripe session for order ID: [{}]", orderId);
+        final OrderDetailsDTO orderDetails = externalOrderService.getOrderDetails(orderId);
         Stripe.apiKey = STRIPE_API_KEY;
-        Customer customer = Customer.create(CustomerCreateParams.builder()
+        final Customer customer = Customer.create(CustomerCreateParams.builder()
                 .setName(orderDetails.getCustomerDetails().getName())
                 .setEmail(orderDetails.getCustomerDetails().getEmail())
                 .build());
-        SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
+        final SessionCreateParams.Builder paramsBuilder = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setCustomer(customer.getId())
                 .setSuccessUrl(String.format("%s/shopping-cart/success/%s", clientBaseUrl, orderId))
                 .setCancelUrl(String.format("%s/failure/%s", clientBaseUrl, orderId));
-        orderDetails.getProducts().forEach(product -> {
-            paramsBuilder.addLineItem(SessionCreateParams.LineItem.builder()
-                    .setQuantity(1L)
-                    .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-                            .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                    .putMetadata("app_id", String.valueOf(product.getId()))
-                                    .setName(product.getName())
-                                    .build())
-                            .setCurrency(SessionCreateParams.PaymentMethodOptions.AcssDebit.Currency.USD.toString())
-                            .setUnitAmount(product.getPrice().longValue() * 100L)
-                            .build())
-                    .build());
-        });
-        Session session = Session.create(paramsBuilder.build());
+        orderDetails.getProducts().forEach(product -> paramsBuilder.addLineItem(SessionCreateParams.LineItem.builder()
+                .setQuantity(1L)
+                .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                        .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                .putMetadata("app_id", String.valueOf(product.getId()))
+                                .setName(product.getName())
+                                .build())
+                        .setCurrency(SessionCreateParams.PaymentMethodOptions.AcssDebit.Currency.USD.toString())
+                        .setUnitAmount(product.getPrice().longValue() * 100L)
+                        .build())
+                .build()));
+        final Session session = Session.create(paramsBuilder.build());
         paymentSessionService.create(orderId, session.getId());
         return session;
     }
@@ -69,6 +68,7 @@ public class StripeServiceImpl implements StripeService {
     @Override
     @PostConstruct
     public void registerWebhooks() throws StripeException {
+        log.debug("Registering Stripe webhooks");
         clearWebhooks();
         WebhookEndpointCreateParams params =
                 WebhookEndpointCreateParams.builder()
@@ -82,9 +82,10 @@ public class StripeServiceImpl implements StripeService {
     @Override
     @PreDestroy
     public void clearWebhooks() throws StripeException {
+        log.debug("Destroying Stripe webhooks");
         Stripe.apiKey = STRIPE_API_KEY;
-        WebhookEndpointListParams params = WebhookEndpointListParams.builder().setLimit(3L).build();
-        WebhookEndpointCollection webhookEndpoints = WebhookEndpoint.list(params);
+        final WebhookEndpointListParams params = WebhookEndpointListParams.builder().setLimit(3L).build();
+        final WebhookEndpointCollection webhookEndpoints = WebhookEndpoint.list(params);
         webhookEndpoints.getData().forEach(webhookEndpoint -> {
             try {
                 webhookEndpoint.delete();

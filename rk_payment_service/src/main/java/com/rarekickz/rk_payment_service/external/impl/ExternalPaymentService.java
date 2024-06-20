@@ -8,8 +8,10 @@ import com.stripe.model.checkout.Session;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 
+@Slf4j
 @GrpcService
 @RequiredArgsConstructor
 public class ExternalPaymentService extends PaymentServiceGrpc.PaymentServiceImplBase {
@@ -19,6 +21,7 @@ public class ExternalPaymentService extends PaymentServiceGrpc.PaymentServiceImp
     @Override
     @SneakyThrows
     public void createPaymentSession(final OrderPaymentRequest request, final StreamObserver<PaymentSessionResponse> responseObserver) {
+        log.debug("Received request to create payment session for order ID: [{}]", request.getOrderId());
         final Session session = stripeService.generateSession(request.getOrderId());
         responseObserver.onNext(PaymentSessionResponse.newBuilder().setSessionUrl(session.getUrl()).build());
         responseObserver.onCompleted();
