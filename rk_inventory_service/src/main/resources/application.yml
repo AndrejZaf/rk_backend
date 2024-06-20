@@ -10,6 +10,12 @@ spring:
     generate-ddl: true
   application:
     name: rk-inventory-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/rk_ecommerce}
+          jwk-set-uri: ${KEYCLOAK_JWK_URI:http://localhost:8090/realms/rk_ecommerce/protocol/openid-connect/certs}
 
 eureka:
   client:
@@ -19,7 +25,7 @@ eureka:
 grpc:
   client:
     orderService:
-      address: ${ORDER_SERVICE_ADDRESS:'static://localhost:9091'}
+      address: ${ORDER_SERVICE_ADDRESS:static://localhost:9091}
       enable-keep-alive: true
       keep-alive-without-calls: true
       negotiation-type: plaintext

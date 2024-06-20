@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,6 +37,7 @@ public class SneakerController {
     private final SneakerService sneakerService;
 
     @GetMapping("/premium")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<SneakerDTO> getPremiumSneaker() {
         log.info("Received request to get the premium sneaker");
         final Sneaker sneaker = sneakerService.findPremiumSneaker();
@@ -43,6 +45,7 @@ public class SneakerController {
     }
 
     @GetMapping("/popular")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<SneakerDTO> getMostPopularSneaker() {
         log.info("Received request to get the most popular sneaker");
         final Sneaker sneaker = sneakerService.findMostPopularSneaker();
@@ -50,6 +53,7 @@ public class SneakerController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<SneakerDTO> getSneaker(@PathVariable Long id) {
         log.info("Received request to get sneaker by ID: [{}]", id);
         final Sneaker sneaker = sneakerService.findById(id);
@@ -57,6 +61,7 @@ public class SneakerController {
     }
 
     @GetMapping("/cart")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<SneakerCartDTO>> getSneakerForCart(@RequestParam List<Long> ids) {
         log.info("Received request to get sneakers for cart by IDs: [{}]", ids);
         final List<Sneaker> sneakers = sneakerService.findAllByIdWithImages(ids);
@@ -64,6 +69,7 @@ public class SneakerController {
     }
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<SneakerDTO>> getSneakers(@RequestParam int page, @RequestParam int size,
                                                         @RequestParam(required = false) List<Long> brandIds, @RequestParam(required = false) List<Double> sizes,
                                                         @RequestParam(required = false) List<Gender> genders) {
@@ -73,6 +79,7 @@ public class SneakerController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<SneakerDTO>> getSneakers() {
         log.info("Received request to get all sneakers");
         final List<Sneaker> sneakers = sneakerService.findAll();
@@ -80,6 +87,7 @@ public class SneakerController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<SneakerDTO> addSneaker(@RequestBody final SneakerDTO sneakerDTO) {
         log.info("Received request to add sneaker");
         final Sneaker sneaker = sneakerService.create(sneakerDTO);
@@ -87,6 +95,7 @@ public class SneakerController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<SneakerDTO> editSneaker(@RequestBody final SneakerDTO sneakerDTO) {
         log.info("Received request to edit sneaker");
         final Sneaker sneaker = sneakerService.update(sneakerDTO);
@@ -94,6 +103,7 @@ public class SneakerController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteSneaker(@RequestParam("id") final Long sneakerId) {
         log.info("Received request to delete sneaker by ID: [{}]", sneakerId);
         sneakerService.deleteById(sneakerId);
@@ -101,6 +111,7 @@ public class SneakerController {
     }
 
     @PatchMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Long> premiumSneaker(@RequestParam("id") final Long sneakerId) {
         log.info("Received request to set a new premium sneaker with ID: [{}]", sneakerId);
         sneakerService.premium(sneakerId);
