@@ -1,4 +1,4 @@
-package com.rarekickz.rk_inventory_service.config;
+package rarekickz.rk_order_service.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

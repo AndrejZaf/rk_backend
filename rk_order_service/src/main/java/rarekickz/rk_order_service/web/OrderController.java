@@ -3,6 +3,7 @@ package rarekickz.rk_order_service.web;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rarekickz.rk_order_service.domain.Order;
 import rarekickz.rk_order_service.domain.OrderInventory;
@@ -26,6 +27,7 @@ public class OrderController {
     private final OrderInventoryService orderInventoryService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<OrderDTO>> getOrders() {
         final List<OrderDTO> orders = orderService.findAll().stream()
                 .map(order -> OrderDTO.builder()
@@ -40,18 +42,21 @@ public class OrderController {
     }
 
     @GetMapping("/statistics")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<SaleDTO>> getOrdersStatistics() {
         List<SaleDTO> sales = orderService.generateStatistics();
         return new ResponseEntity<>(sales, HttpStatus.OK);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<OrderIdentifierDTO> createOrder(@RequestBody final CreateOrderDTO createOrderDTO) {
         final String paymentSession = orderService.create(createOrderDTO);
         return new ResponseEntity<>(new OrderIdentifierDTO(paymentSession), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<OrderPreviewDTO> fetchOrder(@PathVariable final String id) {
         final Order order = orderService.findByUuid(id);
         final List<OrderInventory> orderInventoryList = orderInventoryService.findAllByOrderId(id);
