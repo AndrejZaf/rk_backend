@@ -1,6 +1,5 @@
 server:
   port: 8083
-
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -19,12 +18,10 @@ spring:
     change-log: db/changelog/master.xml
     default-schema: public
     liquibase-schema: public
-
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
-
 grpc:
   client:
     orderService:

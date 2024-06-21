@@ -30,7 +30,7 @@ public class OrderConverter {
     public static OrderPreviewDTO toOrderPreviewDTO(final Order order, final List<OrderInventoryDTO> orderInventoryDTOs) {
         return OrderPreviewDTO.builder()
                 .orderStatus(order.getOrderStatus())
-                .uuid(order.getUuid().toString())
+                .uuid(order.getOrderUuid().toString())
                 .orderPrice(order.getTotalPrice())
                 .orderInventory(orderInventoryDTOs)
                 .build();

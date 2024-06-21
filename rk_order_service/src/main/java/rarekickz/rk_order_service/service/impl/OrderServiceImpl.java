@@ -28,8 +28,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -56,13 +54,13 @@ public class OrderServiceImpl implements OrderService {
         order.setDeliveryInfo(deliveryInfo);
         order = orderRepository.save(order);
         orderInventoryService.save(createOrderDTO.getSneakers(), order);
-        return externalPaymentService.getStripeSessionUrl(order.getUuid().toString());
+        return externalPaymentService.getStripeSessionUrl(order.getOrderUuid().toString());
     }
 
     @Override
     public Order findByUuid(final String id) {
         log.debug("Retrieving order from the database by ID: [{}]", id);
-        return orderRepository.findByUuid(UUID.fromString(id))
+        return orderRepository.findByOrderUuid(UUID.fromString(id))
                 .orElseThrow(EntityNotFoundException::new);
     }
 

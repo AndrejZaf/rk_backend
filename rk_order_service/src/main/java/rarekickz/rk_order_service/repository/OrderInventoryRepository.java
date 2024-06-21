@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface OrderInventoryRepository extends JpaRepository<OrderInventory, Long> {
 
-    List<OrderInventory> findByOrderUuid(UUID orderId);
+    List<OrderInventory> findByOrderOrderUuid(UUID orderId);
 
     @Query("""
          SELECT oi.sneakerId FROM order_inventory oi

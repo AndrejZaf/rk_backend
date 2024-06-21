@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.14.xsd">
+
+    <changeSet id="20240621-1-create_order_table" author="Andrej Zafirovski">
+        <createTable tableName="order">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="total_price" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_uuid" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delivery_info_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_order_delivery_info_id"
+                             references="delivery_info(id)"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

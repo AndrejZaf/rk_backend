@@ -1,6 +1,16 @@
 package rarekickz.rk_order_service.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,8 +43,8 @@ public class Order {
     private OrderStatus orderStatus;
 
     @Builder.Default
-    @Column(unique = true, nullable = false, columnDefinition = "uuid")
-    private UUID uuid = UUID.randomUUID();
+    @Column(name = "order_uuid", unique = true, nullable = false, columnDefinition = "uuid")
+    private UUID orderUuid = UUID.randomUUID();
 
     @OneToOne
     @JoinColumn(name = "delivery_info_id", referencedColumnName = "id")

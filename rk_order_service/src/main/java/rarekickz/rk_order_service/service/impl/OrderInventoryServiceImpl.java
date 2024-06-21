@@ -39,7 +39,7 @@ public class OrderInventoryServiceImpl implements OrderInventoryService {
     @Override
     public List<OrderInventory> findAllByOrderId(final String orderId) {
         log.debug("Retrieving order inventory from the database by order ID: [{}]", orderId);
-        return orderInventoryRepository.findByOrderUuid(UUID.fromString(orderId));
+        return orderInventoryRepository.findByOrderOrderUuid(UUID.fromString(orderId));
     }
 
     @Override
