@@ -65,7 +65,7 @@ public class SneakerConverter {
     private static List<String> convertToStringImages(final Set<SneakerImage> sneakerImages) {
         return sneakerImages.stream()
                 .sorted(Comparator.comparing(SneakerImage::getId))
-                .map(SneakerImage::getImageData)
+                .map(sneakerImage -> new String(sneakerImage.getImageData()))
                 .toList();
     }
 

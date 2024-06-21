@@ -14,6 +14,9 @@
     <description>rk_inventory_service</description>
     <properties>
         <java.version>17</java.version>
+        <eureka.client.version>4.0.0</eureka.client.version>
+        <grpc.version>2.15.0.RELEASE</grpc.version>
+        <liquibase.version>4.28.0</liquibase.version>
     </properties>
     <dependencies>
         <dependency>
@@ -38,7 +41,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-            <version>4.0.0</version>
+            <version>${eureka.client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -58,12 +61,12 @@
         <dependency>
             <groupId>net.devh</groupId>
             <artifactId>grpc-server-spring-boot-starter</artifactId>
-            <version>2.15.0.RELEASE</version>
+            <version>${grpc.version}</version>
         </dependency>
         <dependency>
             <groupId>net.devh</groupId>
             <artifactId>grpc-client-spring-boot-starter</artifactId>
-            <version>2.15.0.RELEASE</version>
+            <version>${grpc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -72,6 +75,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
         </dependency>
     </dependencies>
 

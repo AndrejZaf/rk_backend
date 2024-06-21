@@ -21,7 +21,6 @@ public class Brand {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Lob
-    @Column(name = "image_data")
-    private String imageData;
+    @Column(name = "image_data", columnDefinition = "bytea")
+    private byte[] imageData;
 }

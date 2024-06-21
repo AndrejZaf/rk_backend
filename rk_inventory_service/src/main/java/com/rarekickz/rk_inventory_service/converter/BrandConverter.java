@@ -11,7 +11,7 @@ import java.util.List;
 public class BrandConverter {
 
     public static BrandDTO convertToBrandDTO(final Brand brand) {
-        return new BrandDTO(brand.getId(), brand.getName(), brand.getImageData());
+        return new BrandDTO(brand.getId(), brand.getName(), new String(brand.getImageData()));
     }
 
     public static List<BrandDTO> convertToBrandDTOList(final Collection<Brand> brands) {

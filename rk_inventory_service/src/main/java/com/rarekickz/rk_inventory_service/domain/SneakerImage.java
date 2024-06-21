@@ -25,16 +25,14 @@ public class SneakerImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
-    @Column(name = "image_data")
-    private String imageData;
-
+    @Column(name = "image_data", columnDefinition = "bytea", nullable = false)
+    private byte[] imageData;
 
     @ManyToOne
     @JoinColumn(name = "sneaker_id", nullable = false)
     private Sneaker sneaker;
 
-    public SneakerImage(final String imageData, final Sneaker sneaker) {
+    public SneakerImage(final byte[] imageData, final Sneaker sneaker) {
         this.imageData = imageData;
         this.sneaker = sneaker;
     }

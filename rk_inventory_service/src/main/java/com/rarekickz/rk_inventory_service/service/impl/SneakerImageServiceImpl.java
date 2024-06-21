@@ -30,7 +30,7 @@ public class SneakerImageServiceImpl implements SneakerImageService {
     public Set<SneakerImage> create(final Collection<String> imageData, final Sneaker sneaker) {
         log.debug("Creating sneaker images for sneaker with ID: [{}]", sneaker.getId());
         final List<SneakerImage> sneakerImages = imageData.stream()
-                .map(sneakerImage -> new SneakerImage(sneakerImage, sneaker))
+                .map(sneakerImage -> new SneakerImage(sneakerImage.getBytes(), sneaker))
                 .toList();
         return new HashSet<>(sneakerImageRepository.saveAll(sneakerImages));
     }
