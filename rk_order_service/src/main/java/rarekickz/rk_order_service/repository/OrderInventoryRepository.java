@@ -18,5 +18,5 @@ public interface OrderInventoryRepository extends JpaRepository<OrderInventory, 
          """)
     Long findByMostPopularSneaker();
 
-    List<OrderInventory> findAllByCreatedAtAfter(LocalDateTime date);
+    List<OrderInventory> findAllByCreatedDateAfter(LocalDateTime date);
 }

@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.groupingBy(orderInventory -> {
                     ExtendedSneakerDetailsDTO extendedSneakerDetailsDTO = sneakerIdToDetails.get(orderInventory.getSneakerId());
                     return extendedSneakerDetailsDTO.getBrandName();
-                }, Collectors.groupingBy(orderInventory -> orderInventory.getCreatedAt().toLocalDate())));
+                }, Collectors.groupingBy(orderInventory -> orderInventory.getCreatedDate().toLocalDate())));
         final List<SaleDTO> totalSales = new ArrayList<>();
         brandToSalesPerDate.forEach((brandName, salesPerDate) -> {
             final SaleDTO sales = new SaleDTO(brandName, new ArrayList<>());

@@ -10,6 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "payment_session")
-public class PaymentSession extends Auditable {
+public class PaymentSession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +31,8 @@ public class PaymentSession extends Auditable {
 
     @Column(name = "stripe_session_id", nullable = false)
     private String stripeSessionId;
+
+    @CreatedDate
+    @Column(name = "created_date", updatable = false)
+    protected LocalDateTime createdDate;
 }

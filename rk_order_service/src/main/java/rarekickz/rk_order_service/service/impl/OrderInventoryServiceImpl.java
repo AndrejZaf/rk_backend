@@ -51,6 +51,6 @@ public class OrderInventoryServiceImpl implements OrderInventoryService {
     @Override
     public List<OrderInventory> findAllInLastWeek() {
         log.debug("Retrieving all order inventories from the database in the last week");
-        return orderInventoryRepository.findAllByCreatedAtAfter(LocalDateTime.now().minusWeeks(1));
+        return orderInventoryRepository.findAllByCreatedDateAfter(LocalDateTime.now().minusWeeks(1));
     }
 }

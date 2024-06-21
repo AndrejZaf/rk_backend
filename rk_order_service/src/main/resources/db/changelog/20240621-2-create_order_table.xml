@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.14.xsd">
 
-    <changeSet id="20240621-1-create_order_table" author="Andrej Zafirovski">
+    <changeSet id="20240621-2-create_order_table" author="Andrej Zafirovski">
         <createTable tableName="order">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -23,7 +23,7 @@
                 <constraints nullable="false" foreignKeyName="fk_order_delivery_info_id"
                              references="delivery_info(id)"/>
             </column>
-            <column name="created_at" type="datetime">
+            <column name="created_date" type="datetime">
                 <constraints nullable="false"/>
             </column>
         </createTable>

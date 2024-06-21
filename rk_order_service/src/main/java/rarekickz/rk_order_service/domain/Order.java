@@ -54,5 +54,5 @@ public class Order {
     private Set<OrderInventory> orderInventory;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
 }

@@ -5,19 +5,19 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.14.xsd">
 
-    <changeSet id="20240621-3-create_order_inventory_table" author="Andrej Zafirovski">
-        <createTable tableName="order_inventory">
+    <changeSet id="20240621-1-create_payment_session_table" author="Andrej Zafirovski">
+        <createTable tableName="delivery_info">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="sneaker_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="sneaker_size" type="double">
-                <constraints nullable="false"/>
-            </column>
             <column name="order_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_order_inventory_order_id" references="order(id)"/>
+                <constraints nullable="false"/>
+            </column>
+            <column name="stripe_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stripe_id" type="varchar(255)">
+                <constraints nullable="false"/>
             </column>
             <column name="created_date" type="datetime">
                 <constraints nullable="false"/>
