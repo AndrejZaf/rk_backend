@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/rk_payment
-    username: postgres
-    password: user
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/rk_payment}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:user}
   jpa:
     generate-ddl: true
   application:
@@ -14,19 +14,18 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
 
 stripe:
-  api-key: sk_test_cPFnlTE1PZoNYEJAppyCX0st00aIDM9PbS
-  api-url: https://api.stripe.com/v1
+  api-key: ${STRIPE_API_KEY:sk_test_cPFnlTE1PZoNYEJAppyCX0st00aIDM9PbS}
 client:
-  base-url: http://localhost:4201
+  base-url: ${CLIENT_BASE_URL:http://localhost:4201}
 grpc:
   server:
     port: 9092
   client:
     orderService:
-      address: 'static://localhost:9091'
+      address: ${ORDER_SERVICE_ADDRESS:static://localhost:9091}
       enable-keep-alive: true
       keep-alive-without-calls: true
       negotiation-type: plaintext

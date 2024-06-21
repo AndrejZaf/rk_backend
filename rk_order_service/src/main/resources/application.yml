@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/rk_order
-    username: postgres
-    password: user
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/rk_order}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:user}
   jpa:
     generate-ddl: true
   application:
@@ -20,18 +20,18 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
 grpc:
   server:
     port: 9091
   client:
     sneakerService:
-      address: 'static://localhost:9090'
+      address: ${SNEAKER_SERVICE_ADDRESS:static://localhost:9090}
       enable-keep-alive: true
       keep-alive-without-calls: true
       negotiation-type: plaintext
     paymentService:
-      address: 'static://localhost:9092'
+      address: ${PAYMENT_SERVICE_ADDRESS:static://localhost:9092}
       enable-keep-alive: true
       keep-alive-without-calls: true
       negotiation-type: plaintext
