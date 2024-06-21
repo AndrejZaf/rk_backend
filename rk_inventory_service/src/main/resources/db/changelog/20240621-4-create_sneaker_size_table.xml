@@ -14,9 +14,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="sneaker_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_sneaker_size_id" references="sneaker(id)" />
+                <constraints nullable="false" foreignKeyName="fk_sneaker_size_id" references="sneaker(id)"/>
             </column>
         </createTable>
-        <addPrimaryKey tableName="sneaker_size" columnNames="sneaker_id, size" constraintName="pk_sneaker_id_size" />
+        <addPrimaryKey tableName="sneaker_size" columnNames="sneaker_id, size" constraintName="pk_sneaker_id_size"/>
     </changeSet>
 </databaseChangeLog>

@@ -20,13 +20,25 @@
                 <constraints nullable="false"/>
             </column>
             <column name="is_special" type="bool">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="gender" type="varchar(50)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
             <column name="brand_id" type="int">
-                <constraints nullable="false" foreignKeyName="fk_sneaker_brand" references="brand(id)" />
+                <constraints nullable="false" foreignKeyName="fk_sneaker_brand" references="brand(id)"/>
+            </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="datetime">
+                <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>

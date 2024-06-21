@@ -27,7 +27,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity(name = "sneaker")
-public class Sneaker {
+public class Sneaker extends Auditable {
 
     @Id
     @Column(name = "id")
