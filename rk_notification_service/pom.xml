@@ -8,19 +8,22 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <groupId>rarekickz</groupId>
-    <artifactId>rk_order_service</artifactId>
+    <artifactId>rk_notification_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>rk_order_service</name>
-    <description>rk_order_service</description>
+    <name>rk_notification_service</name>
+    <description>rk_notification_service</description>
     <properties>
         <java.version>17</java.version>
-        <liquibase.version>4.28.0</liquibase.version>
         <grpc.version>2.15.0.RELEASE</grpc.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -33,16 +36,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
@@ -53,14 +46,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.rarekickz</groupId>
-            <artifactId>rk_grpc_interface</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.devh</groupId>
-            <artifactId>grpc-client-spring-boot-starter</artifactId>
-            <version>${grpc.version}</version>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.devh</groupId>
@@ -68,17 +56,9 @@
             <version>${grpc.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
+            <groupId>org.rarekickz</groupId>
+            <artifactId>rk_grpc_interface</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

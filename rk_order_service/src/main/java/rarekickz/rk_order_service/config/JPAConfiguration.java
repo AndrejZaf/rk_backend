@@ -11,7 +11,7 @@ import static rarekickz.rk_order_service.config.JwtUtil.getJwtClaim;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
-public class JPAConfig {
+public class JPAConfiguration {
 
     @Bean
     public AuditorAware<String> auditorAware() {

@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.rarekickz.proto.lib";
+option java_outer_classname = "NotificationsProto";
+
+
+service NotificationService {
+  rpc sendEmailForOrder(EmailNotificationRequest) returns (google.protobuf.Empty) {};
+}
+
+message EmailNotificationRequest {
+  string orderId = 1;
+  string receiver = 2;
+  EmailOrderType emailOrderType = 3;
+  string paymentUrl = 4;
+}
+
+enum EmailOrderType {
+  SUCCESSFUL = 0;
+  RESERVED = 1;
+}

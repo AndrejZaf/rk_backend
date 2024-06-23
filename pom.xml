@@ -23,5 +23,6 @@
         <module>rk_gateway_service</module>
         <module>rk_order_service</module>
         <module>rk_payment_service</module>
+        <module>rk_notification_service</module>
     </modules>
 </project>

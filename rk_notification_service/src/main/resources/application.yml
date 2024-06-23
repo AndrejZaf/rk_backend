@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: rk_notification_service
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:8025}
+
+server:
+  port: 8086
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+
+grpc:
+  server:
+    port: 9093
+
+client:
+  base-url: ${CLIENT_BASE_URL:http://localhost:4201}
