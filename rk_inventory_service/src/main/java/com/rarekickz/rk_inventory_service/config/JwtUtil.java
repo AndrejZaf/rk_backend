@@ -10,6 +10,10 @@ import java.util.Map;
 public class JwtUtil {
 
     public static String getJwtClaim(final String key) {
+        if (SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
+            return SecurityContextHolder.getContext().getAuthentication().getName();
+        }
+
         final Map<String, Object> claims = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getClaims();
         return (String) claims.get(key);
     }

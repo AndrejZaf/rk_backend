@@ -23,9 +23,6 @@
                 <constraints nullable="false" foreignKeyName="fk_order_delivery_info_id"
                              references="delivery_info(id)"/>
             </column>
-            <column name="created_date" type="datetime">
-                <constraints nullable="false"/>
-            </column>
             <column name="created_by" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
