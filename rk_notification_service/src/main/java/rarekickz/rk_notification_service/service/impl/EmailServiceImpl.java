@@ -4,6 +4,7 @@ import com.rarekickz.proto.lib.EmailNotificationRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -14,6 +15,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import rarekickz.rk_notification_service.service.EmailService;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
@@ -28,7 +30,8 @@ public class EmailServiceImpl implements EmailService {
     private String clientBaseUrl;
 
     @Override
-    public void sendEmail(EmailNotificationRequest request) throws MessagingException {
+    public void sendEmail(final EmailNotificationRequest request) throws MessagingException {
+        log.debug("Sending email to [{}]", request.getReceiver());
         final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
         final MimeMessageHelper email = new MimeMessageHelper(mimeMessage, true, "UTF-8");
         email.setTo(request.getReceiver());
@@ -37,9 +40,11 @@ public class EmailServiceImpl implements EmailService {
         final String htmlContent = getTemplate(request, ctx, email);
         email.setText(htmlContent, true);
         javaMailSender.send(mimeMessage);
+        log.debug("Email sent successfully to [{}]", request.getReceiver());
     }
 
-    private String getTemplate(EmailNotificationRequest request, Context context, MimeMessageHelper email) throws MessagingException {
+    private String getTemplate(final EmailNotificationRequest request, final Context context,
+                               final MimeMessageHelper email) throws MessagingException {
         switch (request.getEmailOrderType()) {
             case RESERVED -> {
                 email.setSubject("Your new kicks are on the way!");

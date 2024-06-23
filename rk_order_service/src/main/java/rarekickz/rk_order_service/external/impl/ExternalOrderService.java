@@ -1,7 +1,13 @@
 package rarekickz.rk_order_service.external.impl;
 
 import com.google.protobuf.Empty;
-import com.rarekickz.proto.lib.*;
+import com.rarekickz.proto.lib.CustomerDetailsResponse;
+import com.rarekickz.proto.lib.OrderRequest;
+import com.rarekickz.proto.lib.OrderResponse;
+import com.rarekickz.proto.lib.OrderServiceGrpc;
+import com.rarekickz.proto.lib.PopularSneakerResponse;
+import com.rarekickz.proto.lib.Product;
+import com.rarekickz.proto.lib.SelectedProductsResponse;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +18,7 @@ import rarekickz.rk_order_service.domain.OrderInventory;
 import rarekickz.rk_order_service.dto.ExtendedSneakerDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.enums.OrderStatus;
+import rarekickz.rk_order_service.external.ExternalNotificationService;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
 import rarekickz.rk_order_service.service.OrderInventoryService;
 import rarekickz.rk_order_service.service.OrderService;
@@ -26,6 +33,7 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
     private final OrderService orderService;
     private final ExternalSneakerService externalSneakerService;
     private final OrderInventoryService orderInventoryService;
+    private final ExternalNotificationService externalNotificationService;
 
     @Override
     public void getOrderDetails(final OrderRequest request, final StreamObserver<OrderResponse> responseObserver) {
@@ -63,6 +71,7 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
         final Order order = orderService.findByUuid(request.getOrderId());
         order.setOrderStatus(OrderStatus.ORDER_PAID);
         orderService.save(order);
+        externalNotificationService.sendEmailForSuccessfulOrder(order.getDeliveryInfo().getEmail(), order.getOrderUuid().toString());
         responseObserver.onNext(Empty.getDefaultInstance());
         responseObserver.onCompleted();
     }

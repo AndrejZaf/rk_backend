@@ -36,3 +36,8 @@ grpc:
       enable-keep-alive: true
       keep-alive-without-calls: true
       negotiation-type: plaintext
+    notificationService:
+      address: ${NOTIFICATION_SERVICE_ADDRESS:static://localhost:9092}
+      enable-keep-alive: true
+      keep-alive-without-calls: true
+      negotiation-type: plaintext

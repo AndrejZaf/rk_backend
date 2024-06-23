@@ -9,9 +9,11 @@ import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import rarekickz.rk_notification_service.service.EmailService;
 
+@Slf4j
 @GrpcService
 @RequiredArgsConstructor
 public class ExternalNotificationServiceImpl extends NotificationServiceGrpc.NotificationServiceImplBase {
@@ -19,7 +21,8 @@ public class ExternalNotificationServiceImpl extends NotificationServiceGrpc.Not
     private final EmailService emailService;
 
     @Override
-    public void sendEmailForOrder(EmailNotificationRequest request, StreamObserver<Empty> responseObserver) {
+    public void sendEmailForOrder(final EmailNotificationRequest request, final StreamObserver<Empty> responseObserver) {
+        log.info("Received a request to send email to: [{}]", request.getReceiver());
         try {
             emailService.sendEmail(request);
         } catch (MessagingException e) {

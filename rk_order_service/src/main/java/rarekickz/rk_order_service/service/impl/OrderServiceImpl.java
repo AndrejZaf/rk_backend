@@ -13,6 +13,7 @@ import rarekickz.rk_order_service.dto.InventorySaleDTO;
 import rarekickz.rk_order_service.dto.SaleDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.enums.OrderStatus;
+import rarekickz.rk_order_service.external.ExternalNotificationService;
 import rarekickz.rk_order_service.external.ExternalPaymentService;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
 import rarekickz.rk_order_service.repository.OrderRepository;
@@ -38,6 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderInventoryService orderInventoryService;
     private final OrderRepository orderRepository;
     private final ExternalPaymentService externalPaymentService;
+    private final ExternalNotificationService externalNotificationService;
 
     @Override
     public List<Order> findAll() {
@@ -54,7 +56,9 @@ public class OrderServiceImpl implements OrderService {
         order.setDeliveryInfo(deliveryInfo);
         order = orderRepository.save(order);
         orderInventoryService.save(createOrderDTO.getSneakers(), order);
-        return externalPaymentService.getStripeSessionUrl(order.getOrderUuid().toString());
+        final String paymentUrl = externalPaymentService.getStripeSessionUrl(order.getOrderUuid().toString());
+        externalNotificationService.sendEmailForReservedOrder(deliveryInfo.getEmail(), paymentUrl);
+        return paymentUrl;
     }
 
     @Override

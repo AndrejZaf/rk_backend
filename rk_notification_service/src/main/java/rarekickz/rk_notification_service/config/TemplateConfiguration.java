@@ -17,7 +17,7 @@ public class TemplateConfiguration {
 
     @Bean
     public TemplateEngine emailTemplateEngine() {
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.addTemplateResolver(emailTemplateResolver());
         return templateEngine;
     }
@@ -30,7 +30,6 @@ public class TemplateConfiguration {
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCharacterEncoding(EMAIL_TEMPLATE_ENCODING);
         templateResolver.setCacheable(false);
-
         return templateResolver;
     }
 }
