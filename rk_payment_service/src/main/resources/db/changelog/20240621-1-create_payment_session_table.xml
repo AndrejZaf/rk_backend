@@ -13,10 +13,7 @@
             <column name="order_id" type="int">
                 <constraints nullable="false"/>
             </column>
-            <column name="stripe_id" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="stripe_id" type="varchar(255)">
+            <column name="stripe_session_id" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="datetime">

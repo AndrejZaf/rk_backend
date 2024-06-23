@@ -27,3 +27,17 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
+  ngrok:
+    container_name: 'ngrok'
+    image: ngrok/ngrok:latest
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    ports:
+      - "4040:4040"
+    environment:
+      NGROK_AUTHTOKEN: 2bfc7PKna7DfXDuFIFSiqcohduJ_3ipW3kQYvyWo8qobHaoWB

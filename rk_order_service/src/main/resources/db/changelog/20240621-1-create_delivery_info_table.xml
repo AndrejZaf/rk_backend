@@ -28,6 +28,9 @@
             <column name="country" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="postal_code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="street" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
