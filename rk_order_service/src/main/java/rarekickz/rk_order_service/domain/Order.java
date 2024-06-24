@@ -55,4 +55,7 @@ public class Order extends Auditable {
 
     @CreatedDate
     private LocalDateTime createdDate;
+
+    @Column(name = "user_id", nullable = false, columnDefinition = "uuid")
+    private UUID userId;
 }

@@ -9,4 +9,5 @@
     <include file="db/changelog/20240621-2-create_sneaker_table.xml" />
     <include file="db/changelog/20240621-3-create_sneaker_image_table.xml" />
     <include file="db/changelog/20240621-4-create_sneaker_size_table.xml" />
+    <include file="/db/changelog/20240623-1-create_brands_seed.xml"/>
 </databaseChangeLog>

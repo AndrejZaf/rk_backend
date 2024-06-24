@@ -3,6 +3,7 @@ package rarekickz.rk_order_service.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import rarekickz.rk_order_service.domain.DeliveryInfo;
 import rarekickz.rk_order_service.domain.Order;
@@ -53,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
         externalSneakerService.reserve(createOrderDTO.getSneakers());
         final DeliveryInfo deliveryInfo = deliveryInfoService.save(createOrderDTO.getDeliveryInfo());
         Order order = createOrder(createOrderDTO);
+        order.setUserId(UUID.fromString(SecurityContextHolder.getContext().getAuthentication().getName()));
         order.setDeliveryInfo(deliveryInfo);
         order = orderRepository.save(order);
         orderInventoryService.save(createOrderDTO.getSneakers(), order);

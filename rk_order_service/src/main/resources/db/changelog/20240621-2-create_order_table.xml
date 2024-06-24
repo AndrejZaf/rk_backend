@@ -16,7 +16,10 @@
             <column name="order_status" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="order_uuid" type="varchar(255)">
+            <column name="order_uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
             <column name="delivery_info_id" type="int">
