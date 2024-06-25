@@ -75,7 +75,7 @@ public class SneakerServiceImpl implements SneakerService {
     @Override
     @Transactional
     public List<Sneaker> findAllByIdWithImages(final List<Long> sneakerIds) {
-        log.debug("Retrieving sneakers by IDs: [{}]", sneakerIds);
+        log.debug("Retrieving sneakers with images by IDs: [{}]", sneakerIds);
         return sneakerRepository.findAllByIdWithImages(sneakerIds);
     }
 
