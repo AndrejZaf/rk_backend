@@ -70,11 +70,14 @@ public class SneakerController {
 
     @GetMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<SneakerDTO>> getSneakers(@RequestParam int page, @RequestParam int size,
-                                                        @RequestParam(required = false) List<Long> brandIds, @RequestParam(required = false) List<Double> sizes,
-                                                        @RequestParam(required = false) List<Gender> genders) {
+    public ResponseEntity<List<SneakerDTO>> getSneakers(@RequestParam final int page, @RequestParam final int size,
+                                                        @RequestParam(required = false) final List<Long> brandIds,
+                                                        @RequestParam(required = false) final List<Double> sizes,
+                                                        @RequestParam(required = false) final List<Gender> genders,
+                                                        @RequestParam(defaultValue = "name;asc") final String sort,
+                                                        @RequestParam(required = false) final String name) {
         log.info("Received request to get sneakers by page: [{}], size: [{}], brandIds: [{}], genders: [{}], sizes: [{}]", page, size, brandIds, genders, sizes);
-        final List<Sneaker> sneakers = sneakerService.findAllByPages(page, size, brandIds, genders, sizes);
+        final List<Sneaker> sneakers = sneakerService.findAllByPages(page, size, brandIds, genders, sizes, sort, name);
         return new ResponseEntity<>(convertToSneakerDTOList(sneakers), HttpStatus.OK);
     }
 

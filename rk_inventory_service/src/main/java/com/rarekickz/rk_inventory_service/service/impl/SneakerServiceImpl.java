@@ -20,16 +20,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.rarekickz.rk_inventory_service.specification.SneakerSpecification.createSneakerSpecification;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @Service
@@ -138,13 +146,12 @@ public class SneakerServiceImpl implements SneakerService {
 
     @Override
     @Transactional
-    public List<Sneaker> findAllByPages(final int page, final int size, final List<Long> brandIds,
-                                        final List<Gender> genders,
-                                        final List<Double> sizes) {
+    public List<Sneaker> findAllByPages(final int page, final int size, final List<Long> brandIds, final List<Gender> genders,
+                                        final List<Double> sizes, final String sort, final String name) {
         log.debug("Retrieving sneakers from database by page: [{}], size: [{}], brandIds: [{}], genders: [{}], sizes: [{}]",
                 page, size, brandIds, genders, sizes);
-        final PageRequest pageRequest = PageRequest.of(page, size);
-        final Specification<Sneaker> sneakerSpecification = createSneakerSpecification(brandIds, genders, sizes);
+        final PageRequest pageRequest = PageRequest.of(page, size, Sort.by(parseSortParams(sort)));
+        final Specification<Sneaker> sneakerSpecification = createSneakerSpecification(brandIds, genders, sizes, name);
         final Page<Sneaker> sneakers = sneakerRepository.findAll(sneakerSpecification, pageRequest);
         final List<Long> sneakerIds = sneakers.stream().map(Sneaker::getId)
                 .toList();
@@ -242,5 +249,10 @@ public class SneakerServiceImpl implements SneakerService {
         sneaker.setPrice(sneakerDTO.getPrice());
         sneaker.setSneakerImages(sneakerImages);
         sneaker.setSneakerSizes(sneakerSizes);
+    }
+
+    private Sort.Order parseSortParams(String sortParams) {
+        String[] split = sortParams.split(";");
+        return new Sort.Order(Sort.Direction.fromString(split[1]), split[0]);
     }
 }

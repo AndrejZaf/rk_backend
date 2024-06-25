@@ -16,7 +16,7 @@ public interface SneakerService {
 
     Sneaker findById(Long sneakerId);
 
-    List<Sneaker> findAllByPages(int page, int size, List<Long> brandIds, List<Gender> genders, List<Double> sizes);
+    List<Sneaker> findAllByPages(int page, int size, List<Long> brandIds, List<Gender> genders, List<Double> sizes, String sort, String name);
 
     Sneaker create(SneakerDTO sneakerDTO);
 

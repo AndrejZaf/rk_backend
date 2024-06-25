@@ -10,13 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @UtilityClass
 public class SneakerSpecification {
 
     public static Specification<Sneaker> createSneakerSpecification(final List<Long> brandIds,
                                                                     final List<Gender> genders,
-                                                                    final List<Double> sizes) {
+                                                                    final List<Double> sizes,
+                                                                    final String name) {
         return (root, query, criteriaBuilder) -> {
             final List<Predicate> predicates = new ArrayList<>();
             if (nonNull(sizes) && !sizes.isEmpty()) {
@@ -43,6 +45,13 @@ public class SneakerSpecification {
                                 .map(Enum::toString)
                                 .toList());
                 predicates.add(genderPredicate);
+            }
+
+            if (isNotBlank(name)) {
+                final Predicate namePredicate = criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("name")),
+                        "%" + name.toLowerCase() + "%");
+                predicates.add(namePredicate);
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
