@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 public class StripeServiceImpl implements StripeService {
 
     @Value("${stripe.api-key}")
-    private String STRIPE_API_KEY;
+    private static String stripeApiKey;
 
     @Value("${client.base-url}")
     private String clientBaseUrl;
@@ -35,11 +35,14 @@ public class StripeServiceImpl implements StripeService {
     private final ExternalOrderService externalOrderService;
     private final PaymentSessionService paymentSessionService;
 
+    static {
+        Stripe.apiKey = stripeApiKey;
+    }
+
     @Override
     public Session generateSession(final String orderId) throws StripeException {
         log.debug("Creating a stripe session for order ID: [{}]", orderId);
         final OrderDetailsDTO orderDetails = externalOrderService.getOrderDetails(orderId);
-        Stripe.apiKey = STRIPE_API_KEY;
         final Customer customer = Customer.create(CustomerCreateParams.builder()
                 .setName(orderDetails.getCustomerDetails().getName())
                 .setEmail(orderDetails.getCustomerDetails().getEmail())
@@ -83,7 +86,6 @@ public class StripeServiceImpl implements StripeService {
     @PreDestroy
     public void clearWebhooks() throws StripeException {
         log.debug("Destroying Stripe webhooks");
-        Stripe.apiKey = STRIPE_API_KEY;
         final WebhookEndpointListParams params = WebhookEndpointListParams.builder().setLimit(3L).build();
         final WebhookEndpointCollection webhookEndpoints = WebhookEndpoint.list(params);
         webhookEndpoints.getData().forEach(webhookEndpoint -> {

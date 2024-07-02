@@ -44,6 +44,8 @@ import static java.util.stream.Collectors.toSet;
 @RequiredArgsConstructor
 public class SneakerServiceImpl implements SneakerService {
 
+    private static final String THE_SELECTED_SIZE_IS_NOT_AVAILABLE = "The selected size is not available";
+    
     private final SneakerRepository sneakerRepository;
     private final SneakerImageService sneakerImageService;
     private final SneakerSizeService sneakerSizeService;
@@ -99,9 +101,9 @@ public class SneakerServiceImpl implements SneakerService {
             final Double size = sneakerIdToSizes.get(sneaker.getId()).getSize();
             final SneakerSize sneakerSizeFromDb = sneakerSizes.stream()
                     .filter(sneakerSize -> sneakerSize.getSneakerSizeId().getSize().equals(size))
-                    .findFirst().orElseThrow(() -> new InvalidSizeException("The selected size is not available"));
+                    .findFirst().orElseThrow(() -> new InvalidSizeException(THE_SELECTED_SIZE_IS_NOT_AVAILABLE));
             if (sneakerSizeFromDb.getQuantity().equals(0L)) {
-                throw new InvalidSizeException("The selected size is not available");
+                throw new InvalidSizeException(THE_SELECTED_SIZE_IS_NOT_AVAILABLE);
             }
 
             sneakerSizeFromDb.setQuantity(sneakerSizeFromDb.getQuantity() - 1);
@@ -122,7 +124,7 @@ public class SneakerServiceImpl implements SneakerService {
             final Double size = sneakerIdToSizes.get(sneaker.getId()).getSize();
             final SneakerSize sneakerSizeFromDb = sneaker.getSneakerSizes().stream()
                     .filter(sneakerSize -> sneakerSize.getSneakerSizeId().getSize().equals(size))
-                    .findFirst().orElseThrow(() -> new InvalidSizeException("The selected size is not available"));
+                    .findFirst().orElseThrow(() -> new InvalidSizeException(THE_SELECTED_SIZE_IS_NOT_AVAILABLE));
             sneakerSizeFromDb.setQuantity(sneakerSizeFromDb.getQuantity() + 1);
         });
         sneakerRepository.saveAll(sneakers);

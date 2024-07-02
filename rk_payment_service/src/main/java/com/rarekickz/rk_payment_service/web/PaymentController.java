@@ -2,6 +2,7 @@ package com.rarekickz.rk_payment_service.web;
 
 import com.rarekickz.rk_payment_service.dto.WebhookDTO;
 import com.rarekickz.rk_payment_service.service.PaymentSessionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class PaymentController {
     private final PaymentSessionService paymentSessionService;
 
     @PostMapping
-    public ResponseEntity<String> finalizeOrder(@RequestBody final WebhookDTO webhookDTO) {
+    public ResponseEntity<String> finalizeOrder(@Valid @RequestBody final WebhookDTO webhookDTO) {
         log.info("Received a request to process order after stripe action");
         paymentSessionService.processWebhook(webhookDTO);
         return new ResponseEntity<>(HttpStatus.OK);

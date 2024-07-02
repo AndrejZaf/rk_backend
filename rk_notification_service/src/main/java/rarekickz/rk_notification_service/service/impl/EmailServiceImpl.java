@@ -56,6 +56,7 @@ public class EmailServiceImpl implements EmailService {
                 context.setVariable("url", request.getPaymentUrl());
                 return this.templateEngine.process(ORDER_RESERVED_TEMPLATE, context);
             }
+            default -> log.warn("Unknown order type: [{}]", request.getEmailOrderType());
         }
         return StringUtils.EMPTY;
     }

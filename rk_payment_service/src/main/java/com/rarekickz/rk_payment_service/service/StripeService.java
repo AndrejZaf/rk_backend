@@ -1,6 +1,5 @@
 package com.rarekickz.rk_payment_service.service;
 
-import com.rarekickz.rk_payment_service.dto.OrderDetailsDTO;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 
