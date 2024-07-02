@@ -1,5 +1,5 @@
 tunnels:
   test:
     proto: http
-    addr: http://host.docker.internal:80
+    addr: host.docker.internal:8080
 version: 2
