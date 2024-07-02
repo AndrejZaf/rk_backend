@@ -11,6 +11,8 @@ public interface PaymentSessionRepository extends JpaRepository<PaymentSession, 
 
     boolean existsByOrderIdAndStripeSessionId(String orderId, String stripeSessionId);
 
+    boolean existsPaymentSessionByOrderIdAndStripeSessionId(String orderId, String stripeSessionId);
+
     Optional<PaymentSession> findByStripeSessionId(String stripeSessionId);
 
     void deleteByStripeSessionId(String stripeSessionId);

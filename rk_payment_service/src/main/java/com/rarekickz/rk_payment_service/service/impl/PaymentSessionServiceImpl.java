@@ -21,7 +21,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     @Override
     public void create(final String orderId, final String sessionId) {
         log.debug("Creating a payment session for order ID: [{}]", orderId);
-        boolean orderExists = paymentSessionRepository.existsByOrderIdAndStripeSessionId(orderId, sessionId);
+        boolean orderExists = paymentSessionRepository.existsPaymentSessionByOrderIdAndStripeSessionId(orderId, sessionId);
         if (orderExists) {
             return;
         }

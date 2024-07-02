@@ -12,9 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "order_inventory")
-public class OrderInventory {
+public class OrderInventory extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +34,4 @@ public class OrderInventory {
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
     private Order order;
-
-    @CreatedDate
-    private LocalDateTime createdDate;
 }

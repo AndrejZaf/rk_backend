@@ -19,7 +19,16 @@
             <column name="order_id" type="int">
                 <constraints nullable="false" foreignKeyName="fk_order_inventory_order_id" references="order(id)"/>
             </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="datetime">
                 <constraints nullable="false"/>
             </column>
         </createTable>

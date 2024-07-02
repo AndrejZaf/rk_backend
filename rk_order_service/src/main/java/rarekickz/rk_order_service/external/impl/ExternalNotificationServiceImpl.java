@@ -12,8 +12,8 @@ import rarekickz.rk_order_service.external.ExternalNotificationService;
 @Service
 public class ExternalNotificationServiceImpl implements ExternalNotificationService {
 
-    @GrpcClient("paymentService")
-    private NotificationServiceGrpc.NotificationServiceBlockingStub notificationServiceBlockingStub;
+    @GrpcClient("notificationService")
+    private NotificationServiceGrpc.NotificationServiceFutureStub notificationServiceBlockingStub;
 
     @Override
     public void sendEmailForReservedOrder(final String to, final String paymentUrl) {
