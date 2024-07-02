@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -23,7 +23,7 @@ public class EmailServiceImpl implements EmailService {
     private static final String ORDER_SUCCESSFUL_TEMPLATE = "order-successful";
     private static final String ORDER_RESERVED_TEMPLATE = "order-reserved";
 
-    private final JavaMailSender javaMailSender;
+    private final JavaMailSenderImpl javaMailSender;
     private final TemplateEngine templateEngine;
 
     @Value("${client.base-url}")
@@ -32,7 +32,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmail(final EmailNotificationRequest request) throws MessagingException {
         log.debug("Sending email to [{}]", request.getReceiver());
-        final MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
+        final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         final MimeMessageHelper email = new MimeMessageHelper(mimeMessage, true, "UTF-8");
         email.setTo(request.getReceiver());
         email.setFrom("noreply@rarekickz.com");
@@ -46,12 +46,12 @@ public class EmailServiceImpl implements EmailService {
     private String getTemplate(final EmailNotificationRequest request, final Context context,
                                final MimeMessageHelper email) throws MessagingException {
         switch (request.getEmailOrderType()) {
-            case RESERVED -> {
+            case SUCCESSFUL -> {
                 email.setSubject("Your new kicks are on the way!");
                 context.setVariable("url", String.format("%s/orders/%s", clientBaseUrl, request.getOrderId()));
                 return this.templateEngine.process(ORDER_SUCCESSFUL_TEMPLATE, context);
             }
-            case SUCCESSFUL -> {
+            case RESERVED -> {
                 email.setSubject("Your kicks are waiting in order to be shipped!");
                 context.setVariable("url", request.getPaymentUrl());
                 return this.templateEngine.process(ORDER_RESERVED_TEMPLATE, context);
