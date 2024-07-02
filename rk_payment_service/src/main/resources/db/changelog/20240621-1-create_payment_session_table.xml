@@ -6,11 +6,11 @@
       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.14.xsd">
 
     <changeSet id="20240621-1-create_payment_session_table" author="Andrej Zafirovski">
-        <createTable tableName="delivery_info">
+        <createTable tableName="payment_session">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="order_id" type="int">
+            <column name="order_id" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="stripe_session_id" type="varchar(255)">
