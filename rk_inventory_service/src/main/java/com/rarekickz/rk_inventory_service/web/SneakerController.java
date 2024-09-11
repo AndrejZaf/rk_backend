@@ -115,7 +115,7 @@ public class SneakerController {
 
     @PatchMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Long> premiumSneaker(@RequestParam("id") final Long sneakerId) {
+    public ResponseEntity<Void> premiumSneaker(@RequestParam("id") final Long sneakerId) {
         log.info("Received request to set a new premium sneaker with ID: [{}]", sneakerId);
         sneakerService.premium(sneakerId);
         return new ResponseEntity<>(HttpStatus.OK);
