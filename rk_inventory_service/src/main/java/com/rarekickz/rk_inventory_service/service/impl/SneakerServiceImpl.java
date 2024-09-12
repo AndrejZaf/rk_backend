@@ -183,15 +183,14 @@ public class SneakerServiceImpl implements SneakerService {
     public Sneaker update(final SneakerDTO sneakerDTO) {
         log.debug("Updating sneaker with ID [{}]", sneakerDTO.getId());
         final Brand brand = brandService.findById(sneakerDTO.getBrandId());
-        Sneaker sneaker = sneakerRepository
+        final Sneaker sneaker = sneakerRepository
                 .findById(sneakerDTO.getId()).orElseThrow(EntityNotFoundException::new);
         sneakerImageService.delete(sneaker.getSneakerImages());
         sneakerSizeService.delete(sneaker.getSneakerSizes());
         final Set<SneakerImage> sneakerImages = sneakerImageService.create(sneakerDTO.getImages(), sneaker);
         final Set<SneakerSize> sneakerSizes = sneakerSizeService.create(sneaker, sneakerDTO.getSizes());
         updateSneakerProperties(sneakerDTO, brand, sneaker, sneakerImages, sneakerSizes);
-        sneaker = sneakerRepository.save(sneaker);
-        return sneaker;
+        return sneakerRepository.save(sneaker);
     }
 
     @Override
@@ -253,8 +252,8 @@ public class SneakerServiceImpl implements SneakerService {
         sneaker.setSneakerSizes(sneakerSizes);
     }
 
-    private Sort.Order parseSortParams(String sortParams) {
-        String[] split = sortParams.split(";");
+    private Sort.Order parseSortParams(final String sortParams) {
+        final String[] split = sortParams.split(";");
         return new Sort.Order(Sort.Direction.fromString(split[1]), split[0]);
     }
 }
