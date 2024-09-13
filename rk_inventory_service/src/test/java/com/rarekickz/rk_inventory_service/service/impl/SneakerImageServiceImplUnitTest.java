@@ -6,12 +6,22 @@ import com.rarekickz.rk_inventory_service.domain.SneakerImage;
 import com.rarekickz.rk_inventory_service.enums.Gender;
 import com.rarekickz.rk_inventory_service.repository.SneakerImageRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SneakerImageServiceImplUnitTest {
@@ -39,49 +49,43 @@ class SneakerImageServiceImplUnitTest {
         sneakerImage = new SneakerImage(new byte[]{}, sneaker);
     }
 
-//    @Test
-//    void findAllBySneakerIds_returnsListOfSneakerImages() {
-//        // Arrange
-//        when(sneakerImageRepository.findBySneakerIdIn(sneakerIds)).thenReturn(sizes);
-//
-//        // Act
-//        List<Double> actualSizes = sneakerSizeService.findAllDistinctSizes();
-//
-//        // Assert
-//        assertThat(actualSizes, is(equalTo(sizes)));
-//    }
-//
-//    @Test
-//    void create_returnsSuccessfullyCreatedSneaker() {
-//        // Arrange
-//        Collection<SneakerSizeDTO> sneakerSizes = List.of(
-//                new SneakerSizeDTO(8.5, 10L),
-//                new SneakerSizeDTO(9.0, 20L));
-//        Set<SneakerSize> expectedSneakerSizes = Set.of(
-//                new SneakerSize(sneaker, 8.5, 10L),
-//                new SneakerSize(sneaker, 9.0, 20L));
-//        when(sneakerSizeRepository.saveAll(anyList())).thenReturn(expectedSneakerSizes.stream().toList());
-//
-//        // Act
-//        Set<SneakerSize> actualSneakerSizes = sneakerSizeService.create(sneaker, sneakerSizes);
-//
-//        // Assert
-//        verify(sneakerSizeRepository).saveAll(anyList());
-//        assertThat(actualSneakerSizes, is(equalTo(expectedSneakerSizes)));
-//    }
-//
-//    @Test
-//    void delete_callsDeleteAllAndFlushOnSneakerSizeRepository() {
-//        // Arrange
-//        Set<SneakerSize> sneakerSizes = Set.of(
-//                new SneakerSize(sneaker, 8.5, 10L),
-//                new SneakerSize(sneaker, 9.0, 20L));
-//
-//        // Act
-//        sneakerSizeService.delete(sneakerSizes);
-//
-//        // Assert
-//        verify(sneakerSizeRepository).deleteAll(sneakerSizes);
-//        verify(sneakerSizeRepository).flush();
-//    }
+    @Test
+    void findAllBySneakerIds_returnsListOfSneakerImages() {
+        // Arrange
+        List<Long> sneakerIds = List.of(sneaker.getId());
+        List<SneakerImage> sneakerImages = List.of(sneakerImage);
+        when(sneakerImageRepository.findBySneakerIdIn(sneakerIds)).thenReturn(sneakerImages);
+
+        // Act
+        List<SneakerImage> actualImages = sneakerImageService.findAllBySneakerIds(sneakerIds);
+
+        // Assert
+        assertThat(actualImages, is(equalTo(sneakerImages)));
+    }
+
+    @Test
+    void create_returnsSuccessfullyCreatedSneaker() {
+        // Arrange
+        Set<SneakerImage> sneakerImages = Set.of(sneakerImage);
+        when(sneakerImageRepository.saveAll(anyList())).thenReturn(sneakerImages.stream().toList());
+
+        // Act
+        Set<SneakerImage> actualSneakerImages = sneakerImageService.create(List.of(""), sneaker);
+
+        // Assert
+        verify(sneakerImageRepository).saveAll(anyList());
+        assertThat(actualSneakerImages, is(equalTo(sneakerImages)));
+    }
+
+    @Test
+    void delete_callsDeleteAllAndFlushOnSneakerSizeRepository() {
+        // Arrange
+        List<SneakerImage> sneakerImages = List.of(sneakerImage);
+        // Act
+        sneakerImageService.delete(sneakerImages);
+
+        // Assert
+        verify(sneakerImageRepository).deleteAll(sneakerImages);
+        verify(sneakerImageRepository).flush();
+    }
 }

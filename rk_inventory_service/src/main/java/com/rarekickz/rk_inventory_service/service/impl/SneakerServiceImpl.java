@@ -45,7 +45,7 @@ import static java.util.stream.Collectors.toSet;
 public class SneakerServiceImpl implements SneakerService {
 
     private static final String THE_SELECTED_SIZE_IS_NOT_AVAILABLE = "The selected size is not available";
-    
+
     private final SneakerRepository sneakerRepository;
     private final SneakerImageService sneakerImageService;
     private final SneakerSizeService sneakerSizeService;
@@ -63,7 +63,7 @@ public class SneakerServiceImpl implements SneakerService {
     @Transactional
     public Sneaker findMostPopularSneaker() {
         log.debug("Retrieving most popular sneaker from database");
-        Long sneakerId = externalOrderService.findMostPopularSneakerId();
+        final Long sneakerId = externalOrderService.findMostPopularSneakerId();
         return sneakerRepository.findByIdWithImages(sneakerId).orElseThrow(EntityNotFoundException::new);
     }
 
@@ -183,8 +183,7 @@ public class SneakerServiceImpl implements SneakerService {
     public Sneaker update(final SneakerDTO sneakerDTO) {
         log.debug("Updating sneaker with ID [{}]", sneakerDTO.getId());
         final Brand brand = brandService.findById(sneakerDTO.getBrandId());
-        final Sneaker sneaker = sneakerRepository
-                .findById(sneakerDTO.getId()).orElseThrow(EntityNotFoundException::new);
+        final Sneaker sneaker = sneakerRepository.findById(sneakerDTO.getId()).orElseThrow(EntityNotFoundException::new);
         sneakerImageService.delete(sneaker.getSneakerImages());
         sneakerSizeService.delete(sneaker.getSneakerSizes());
         final Set<SneakerImage> sneakerImages = sneakerImageService.create(sneakerDTO.getImages(), sneaker);
@@ -212,7 +211,7 @@ public class SneakerServiceImpl implements SneakerService {
         }
 
         newSpecialSneaker.setSpecial(true);
-        final Optional<Sneaker> previousSpecialSneaker = sneakerRepository.findBySpecialTrue();
+        final Optional<Sneaker> previousSpecialSneaker = sneakerRepository.findBySpecialIsTrue();
         if (previousSpecialSneaker.isPresent()) {
             final Sneaker sneaker = previousSpecialSneaker.get();
             sneaker.setSpecial(false);
