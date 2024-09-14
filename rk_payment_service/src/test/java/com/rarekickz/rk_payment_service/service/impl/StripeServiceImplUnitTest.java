@@ -5,6 +5,7 @@ import com.rarekickz.rk_payment_service.dto.OrderDetailsDTO;
 import com.rarekickz.rk_payment_service.dto.ProductDTO;
 import com.rarekickz.rk_payment_service.external.ExternalOrderService;
 import com.rarekickz.rk_payment_service.service.PaymentSessionService;
+import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.WebhookEndpoint;
@@ -26,7 +27,9 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
@@ -92,6 +95,22 @@ class StripeServiceImplUnitTest {
 
             // Assert
             webhookStatic.verify(() -> WebhookEndpoint.create((WebhookEndpointCreateParams) any()));
+        }
+    }
+
+    @Test
+    void clearWebhooks_throwsException() throws StripeException {
+        // Arrange
+        try (MockedStatic<WebhookEndpoint> webhookStatic = mockStatic(WebhookEndpoint.class);) {
+            WebhookEndpoint webhookEndpoint = mock(WebhookEndpoint.class);
+            WebhookEndpointCollection webhookEndpointCollection = new WebhookEndpointCollection();
+            webhookEndpointCollection.setData(List.of(webhookEndpoint));
+            webhookStatic.when(() -> WebhookEndpoint.list((WebhookEndpointListParams) any())).thenReturn(webhookEndpointCollection);
+            doThrow(new InvalidRequestException("test", null, null, null, 0, null)).when(webhookEndpoint).delete();
+
+            // Act
+            // Assert
+            assertThrows(RuntimeException.class, () -> stripeService.clearWebhooks());
         }
     }
 }
