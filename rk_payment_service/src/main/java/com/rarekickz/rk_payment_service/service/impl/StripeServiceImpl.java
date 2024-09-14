@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 public class StripeServiceImpl implements StripeService {
 
     @Value("${stripe.api-key}")
-    private static String stripeApiKey;
+    private String stripeApiKey;
 
     @Value("${client.base-url}")
     private String clientBaseUrl;
@@ -35,7 +35,8 @@ public class StripeServiceImpl implements StripeService {
     private final ExternalOrderService externalOrderService;
     private final PaymentSessionService paymentSessionService;
 
-    static {
+    @PostConstruct
+    void init() {
         Stripe.apiKey = stripeApiKey;
     }
 

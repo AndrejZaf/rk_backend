@@ -6,16 +6,30 @@ import com.rarekickz.rk_payment_service.dto.ProductDTO;
 import com.rarekickz.rk_payment_service.external.ExternalOrderService;
 import com.rarekickz.rk_payment_service.service.PaymentSessionService;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.model.WebhookEndpoint;
+import com.stripe.model.WebhookEndpointCollection;
 import com.stripe.model.checkout.Session;
+import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.WebhookEndpointCreateParams;
+import com.stripe.param.WebhookEndpointListParams;
+import com.stripe.param.checkout.SessionCreateParams;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,13 +60,38 @@ class StripeServiceImplUnitTest {
                         .build()))
                 .build();
         when(externalOrderService.getOrderDetails(orderId)).thenReturn(orderDetails);
-        ReflectionTestUtils.setField(StripeServiceImpl.class, "stripeApiKey", "test");
+        try (MockedStatic<Customer> customerStatic = mockStatic(Customer.class);
+             MockedStatic<Session> sessionStatic = mockStatic(Session.class);) {
+            Customer customer = new Customer();
+            customer.setId("customerId");
+            customerStatic.when(() -> Customer.create((CustomerCreateParams) any())).thenReturn(customer);
+            Session session = new Session();
+            session.setId("sessionId");
+            sessionStatic.when(() -> Session.create((SessionCreateParams) any())).thenReturn(session);
 
-        // Act
-        Session actualSession = stripeService.generateSession(orderId);
+            // Act
+            Session actualSession = stripeService.generateSession(orderId);
 
-        // Assert
-//        verify(paymentSessionService).create(orderId, session.getId());
-//        assertThat(actualSession.getId(), is(equalTo(session.getId())));
+            // Assert
+            verify(paymentSessionService).create(orderId, session.getId());
+            assertThat(actualSession.getId(), is(equalTo(session.getId())));
+        }
+    }
+
+    @Test
+    void registerWebhooks_successfullyRegistersWebhooks() throws StripeException {
+        // Arrange
+        try (MockedStatic<WebhookEndpoint> webhookStatic = mockStatic(WebhookEndpoint.class);) {
+            WebhookEndpoint webhookEndpoint = mock(WebhookEndpoint.class);
+            WebhookEndpointCollection webhookEndpointCollection = new WebhookEndpointCollection();
+            webhookEndpointCollection.setData(List.of(webhookEndpoint));
+            webhookStatic.when(() -> WebhookEndpoint.list((WebhookEndpointListParams) any())).thenReturn(webhookEndpointCollection);
+
+            // Act
+            stripeService.registerWebhooks();
+
+            // Assert
+            webhookStatic.verify(() -> WebhookEndpoint.create((WebhookEndpointCreateParams) any()));
+        }
     }
 }
