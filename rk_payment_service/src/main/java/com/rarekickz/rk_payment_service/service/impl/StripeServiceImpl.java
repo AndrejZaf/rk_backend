@@ -73,7 +73,7 @@ public class StripeServiceImpl implements StripeService {
     public void registerWebhooks() throws StripeException {
         log.debug("Registering Stripe webhooks");
         clearWebhooks();
-        WebhookEndpointCreateParams params =
+        final WebhookEndpointCreateParams params =
                 WebhookEndpointCreateParams.builder()
                         .addEnabledEvent(WebhookEndpointCreateParams.EnabledEvent.CHECKOUT__SESSION__COMPLETED)
                         .addEnabledEvent(WebhookEndpointCreateParams.EnabledEvent.CHECKOUT__SESSION__EXPIRED)
