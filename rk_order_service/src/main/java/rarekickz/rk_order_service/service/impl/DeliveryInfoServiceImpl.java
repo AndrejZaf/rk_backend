@@ -8,6 +8,8 @@ import rarekickz.rk_order_service.dto.DeliveryInfoDTO;
 import rarekickz.rk_order_service.repository.DeliveryInfoRepository;
 import rarekickz.rk_order_service.service.DeliveryInfoService;
 
+import static rarekickz.rk_order_service.converter.DeliveryInfoConverter.toDeliveryInfo;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -18,20 +20,7 @@ public class DeliveryInfoServiceImpl implements DeliveryInfoService {
     @Override
     public DeliveryInfo save(final DeliveryInfoDTO deliveryInfoDTO) {
         log.debug("Saving delivery info to the database");
-        final DeliveryInfo deliveryInfo = createDeliveryInfoData(deliveryInfoDTO);
+        final DeliveryInfo deliveryInfo = toDeliveryInfo(deliveryInfoDTO);
         return deliveryInfoRepository.save(deliveryInfo);
-    }
-
-    private static DeliveryInfo createDeliveryInfoData(final DeliveryInfoDTO deliveryInfoDTO) {
-        return DeliveryInfo.builder()
-                .firstName(deliveryInfoDTO.getFirstName())
-                .lastName(deliveryInfoDTO.getLastName())
-                .email(deliveryInfoDTO.getEmail())
-                .phoneNumber(deliveryInfoDTO.getPhoneNumber())
-                .city(deliveryInfoDTO.getCity())
-                .country(deliveryInfoDTO.getCountry())
-                .street(deliveryInfoDTO.getStreet())
-                .postalCode(deliveryInfoDTO.getPostalCode())
-                .build();
     }
 }

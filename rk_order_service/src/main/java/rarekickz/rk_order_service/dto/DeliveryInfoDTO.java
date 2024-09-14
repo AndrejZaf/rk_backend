@@ -1,8 +1,10 @@
 package rarekickz.rk_order_service.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class DeliveryInfoDTO {
 
     private String firstName;

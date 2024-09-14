@@ -18,9 +18,10 @@ public class ExternalPaymentServiceImpl implements ExternalPaymentService {
     @Override
     public String getStripeSessionUrl(final String orderId) {
         log.debug("Retrieve Stripe session URL for order with ID: [{}]", orderId);
-        final PaymentSessionResponse paymentSession = paymentServiceBlockingStub.createPaymentSession(OrderPaymentRequest.newBuilder()
+        OrderPaymentRequest paymentRequest = OrderPaymentRequest.newBuilder()
                 .setOrderId(orderId)
-                .build());
+                .build();
+        final PaymentSessionResponse paymentSession = paymentServiceBlockingStub.createPaymentSession(paymentRequest);
         return paymentSession.getSessionUrl();
     }
 }

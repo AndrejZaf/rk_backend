@@ -5,8 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import rarekickz.rk_order_service.converter.OrderConverter;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import rarekickz.rk_order_service.domain.Order;
 import rarekickz.rk_order_service.domain.OrderInventory;
 import rarekickz.rk_order_service.dto.CreateOrderDTO;
@@ -20,9 +24,9 @@ import rarekickz.rk_order_service.service.OrderService;
 
 import java.util.List;
 
-import static rarekickz.rk_order_service.converter.OrderConverter.toOrderDTO;
 import static rarekickz.rk_order_service.converter.OrderConverter.toOrderDTOList;
 import static rarekickz.rk_order_service.converter.OrderConverter.toOrderPreviewDTO;
+import static rarekickz.rk_order_service.converter.OrderInventoryConverter.toOrderInventoryList;
 
 @Slf4j
 @RestController
@@ -54,7 +58,7 @@ public class OrderController {
     public ResponseEntity<OrderIdentifierDTO> createOrder(@RequestBody final CreateOrderDTO createOrderDTO) {
         log.info("Received a request to create an order");
         final String paymentSession = orderService.create(createOrderDTO);
-        return new ResponseEntity<>(new OrderIdentifierDTO(paymentSession), HttpStatus.OK);
+        return new ResponseEntity<>(new OrderIdentifierDTO(paymentSession), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -63,9 +67,7 @@ public class OrderController {
         log.info("Received a request to fetch an order by ID: [{}]", id);
         final Order order = orderService.findByUuid(id);
         final List<OrderInventory> orderInventoryList = orderInventoryService.findAllByOrderId(id);
-        final List<OrderInventoryDTO> orderInventoryDTOs = orderInventoryList.stream()
-                .map(orderInventory -> new OrderInventoryDTO(orderInventory.getSneakerId(), orderInventory.getSneakerSize()))
-                .toList();
+        final List<OrderInventoryDTO> orderInventoryDTOs = toOrderInventoryList(orderInventoryList);
         return new ResponseEntity<>(toOrderPreviewDTO(order, orderInventoryDTOs), HttpStatus.OK);
     }
 }
