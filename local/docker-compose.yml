@@ -40,4 +40,4 @@ services:
     ports:
       - "4040:4040"
     environment:
-      NGROK_AUTHTOKEN: 2bfc7PKna7DfXDuFIFSiqcohduJ_3ipW3kQYvyWo8qobHaoWB
+      NGROK_AUTHTOKEN: ${NG_ROK_TOKEN}

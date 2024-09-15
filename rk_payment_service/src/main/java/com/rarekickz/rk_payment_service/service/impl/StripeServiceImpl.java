@@ -33,6 +33,9 @@ public class StripeServiceImpl implements StripeService {
     @Value("${client.base-url}")
     private String clientBaseUrl;
 
+    @Value("${webhook-callback.url}")
+    private String webhookCallbackUrl;
+
     private final ExternalOrderService externalOrderService;
     private final PaymentSessionService paymentSessionService;
 
@@ -79,7 +82,7 @@ public class StripeServiceImpl implements StripeService {
                 WebhookEndpointCreateParams.builder()
                         .addEnabledEvent(WebhookEndpointCreateParams.EnabledEvent.CHECKOUT__SESSION__COMPLETED)
                         .addEnabledEvent(WebhookEndpointCreateParams.EnabledEvent.CHECKOUT__SESSION__EXPIRED)
-                        .setUrl("https://5044-46-217-144-36.ngrok-free.app/api/payment")
+                        .setUrl(webhookCallbackUrl)
                         .build();
         WebhookEndpoint.create(params);
     }

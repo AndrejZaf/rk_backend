@@ -19,7 +19,7 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
 stripe:
-  api-key: ${STRIPE_API_KEY:sk_test_cPFnlTE1PZoNYEJAppyCX0st00aIDM9PbS}
+  api-key: ${STRIPE_API_KEY:stripe_token}
 client:
   base-url: ${CLIENT_BASE_URL:http://localhost:4201}
 grpc:
@@ -31,3 +31,5 @@ grpc:
       enable-keep-alive: true
       keep-alive-without-calls: true
       negotiation-type: plaintext
+webhook-callback:
+  url: ${WEBHOOK_CALLBACK_URL:http://localhost:8080/apy/payment}
