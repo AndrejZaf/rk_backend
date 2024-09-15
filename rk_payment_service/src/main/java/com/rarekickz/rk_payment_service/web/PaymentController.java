@@ -29,6 +29,7 @@ public class PaymentController {
             value = {
                     @ApiResponse(responseCode = "200", description = "Successfully processed order"),
                     @ApiResponse(responseCode = "400", description = "Invalid request"),
+                    @ApiResponse(responseCode = "404", description = "Payment session not found"),
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             })
     public ResponseEntity<Void> finalizeOrder(@Valid @RequestBody final WebhookDTO webhookDTO) {
