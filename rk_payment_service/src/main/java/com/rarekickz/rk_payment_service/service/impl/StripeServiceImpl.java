@@ -1,6 +1,7 @@
 package com.rarekickz.rk_payment_service.service.impl;
 
 import com.rarekickz.rk_payment_service.dto.OrderDetailsDTO;
+import com.rarekickz.rk_payment_service.exception.PaymentSessionInitializationException;
 import com.rarekickz.rk_payment_service.external.ExternalOrderService;
 import com.rarekickz.rk_payment_service.service.PaymentSessionService;
 import com.rarekickz.rk_payment_service.service.StripeService;
@@ -93,7 +94,7 @@ public class StripeServiceImpl implements StripeService {
             try {
                 webhookEndpoint.delete();
             } catch (StripeException e) {
-                throw new RuntimeException(e);
+                throw new PaymentSessionInitializationException();
             }
         });
     }

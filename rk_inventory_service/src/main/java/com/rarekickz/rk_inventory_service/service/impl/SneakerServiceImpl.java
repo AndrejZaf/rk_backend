@@ -9,13 +9,13 @@ import com.rarekickz.rk_inventory_service.dto.SneakerDTO;
 import com.rarekickz.rk_inventory_service.enums.Gender;
 import com.rarekickz.rk_inventory_service.exception.InvalidSizeException;
 import com.rarekickz.rk_inventory_service.exception.InvalidSneakerException;
+import com.rarekickz.rk_inventory_service.exception.SneakerNotFoundException;
 import com.rarekickz.rk_inventory_service.external.ExternalOrderService;
 import com.rarekickz.rk_inventory_service.repository.SneakerRepository;
 import com.rarekickz.rk_inventory_service.service.BrandService;
 import com.rarekickz.rk_inventory_service.service.SneakerImageService;
 import com.rarekickz.rk_inventory_service.service.SneakerService;
 import com.rarekickz.rk_inventory_service.service.SneakerSizeService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -56,7 +56,7 @@ public class SneakerServiceImpl implements SneakerService {
     @Transactional
     public Sneaker findPremiumSneaker() {
         log.debug("Retrieving premium sneaker from database");
-        return sneakerRepository.findBySpecialIsTrue().orElseThrow(EntityNotFoundException::new);
+        return sneakerRepository.findBySpecialIsTrue().orElseThrow(SneakerNotFoundException::new);
     }
 
     @Override
@@ -64,14 +64,14 @@ public class SneakerServiceImpl implements SneakerService {
     public Sneaker findMostPopularSneaker() {
         log.debug("Retrieving most popular sneaker from database");
         final Long sneakerId = externalOrderService.findMostPopularSneakerId();
-        return sneakerRepository.findByIdWithImages(sneakerId).orElseThrow(EntityNotFoundException::new);
+        return sneakerRepository.findByIdWithImages(sneakerId).orElseThrow(SneakerNotFoundException::new);
     }
 
     @Override
     @Transactional
     public Sneaker findById(final Long sneakerId) {
         log.debug("Retrieving sneaker by ID: [{}]", sneakerId);
-        return sneakerRepository.findByIdWithImages(sneakerId).orElseThrow(EntityNotFoundException::new);
+        return sneakerRepository.findByIdWithImages(sneakerId).orElseThrow(SneakerNotFoundException::new);
     }
 
     @Override
@@ -183,7 +183,7 @@ public class SneakerServiceImpl implements SneakerService {
     public Sneaker update(final SneakerDTO sneakerDTO) {
         log.debug("Updating sneaker with ID [{}]", sneakerDTO.getId());
         final Brand brand = brandService.findById(sneakerDTO.getBrandId());
-        final Sneaker sneaker = sneakerRepository.findById(sneakerDTO.getId()).orElseThrow(EntityNotFoundException::new);
+        final Sneaker sneaker = sneakerRepository.findById(sneakerDTO.getId()).orElseThrow(SneakerNotFoundException::new);
         sneakerImageService.delete(sneaker.getSneakerImages());
         sneakerSizeService.delete(sneaker.getSneakerSizes());
         final Set<SneakerImage> sneakerImages = sneakerImageService.create(sneakerDTO.getImages(), sneaker);
@@ -196,7 +196,7 @@ public class SneakerServiceImpl implements SneakerService {
     @Transactional
     public void deleteById(final Long sneakerId) {
         log.debug("Deleting sneaker with ID [{}]", sneakerId);
-        final Sneaker sneaker = sneakerRepository.findById(sneakerId).orElseThrow(EntityNotFoundException::new);
+        final Sneaker sneaker = sneakerRepository.findById(sneakerId).orElseThrow(SneakerNotFoundException::new);
         sneakerSizeService.delete(sneaker.getSneakerSizes());
         sneakerImageService.delete(sneaker.getSneakerImages());
         sneakerRepository.delete(sneaker);
@@ -205,7 +205,7 @@ public class SneakerServiceImpl implements SneakerService {
     @Override
     public void premium(final Long sneakerId) {
         log.debug("Setting sneaker with ID [{}] as premium", sneakerId);
-        final Sneaker newSpecialSneaker = sneakerRepository.findById(sneakerId).orElseThrow(EntityNotFoundException::new);
+        final Sneaker newSpecialSneaker = sneakerRepository.findById(sneakerId).orElseThrow(SneakerNotFoundException::new);
         if (newSpecialSneaker.isSpecial()) {
             return;
         }

@@ -16,6 +16,6 @@ public class OpenApiConfiguration {
                 .info(new Info()
                         .title("Rare Kickz Payment Service")
                         .version("0.0.1")
-                        .description("API for Processing Payments"));
+                        .description("API for Payment Session Management"));
     }
 }

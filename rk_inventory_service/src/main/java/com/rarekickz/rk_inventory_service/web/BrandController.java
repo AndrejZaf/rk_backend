@@ -3,6 +3,9 @@ package com.rarekickz.rk_inventory_service.web;
 import com.rarekickz.rk_inventory_service.domain.Brand;
 import com.rarekickz.rk_inventory_service.dto.BrandDTO;
 import com.rarekickz.rk_inventory_service.service.BrandService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,11 @@ public class BrandController {
 
     @GetMapping
     @PreAuthorize("permitAll()")
+    @Operation(summary = "Retrieve all brands")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved brands"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<List<BrandDTO>> getAllBrands() {
         log.info("Received a request to get all brands");
         final List<Brand> brands = brandService.findAll();
