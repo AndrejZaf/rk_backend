@@ -1,6 +1,5 @@
 package rarekickz.rk_order_service.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +18,7 @@ import rarekickz.rk_order_service.dto.ExtendedSneakerDetailsDTO;
 import rarekickz.rk_order_service.dto.SaleDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.enums.OrderStatus;
+import rarekickz.rk_order_service.exception.OrderNotFoundException;
 import rarekickz.rk_order_service.external.ExternalNotificationService;
 import rarekickz.rk_order_service.external.ExternalPaymentService;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
@@ -130,13 +130,13 @@ class OrderServiceImplUnitTest {
     }
 
     @Test
-    void findByOrderId_throwsEntityNotFoundException() {
+    void findByOrderId_throwsOrderNotFoundException() {
         // Arrange
         when(orderRepository.findByOrderUuid(order.getOrderUuid())).thenReturn(Optional.empty());
 
         // Act
         // Assert
-        assertThrows(EntityNotFoundException.class, () -> orderService.findByOrderId(order.getOrderUuid().toString()));
+        assertThrows(OrderNotFoundException.class, () -> orderService.findByOrderId(order.getOrderUuid().toString()));
     }
 
     @Test

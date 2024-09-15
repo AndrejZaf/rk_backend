@@ -11,12 +11,12 @@ import com.rarekickz.rk_inventory_service.dto.SneakerSizeDTO;
 import com.rarekickz.rk_inventory_service.enums.Gender;
 import com.rarekickz.rk_inventory_service.exception.InvalidSizeException;
 import com.rarekickz.rk_inventory_service.exception.InvalidSneakerException;
+import com.rarekickz.rk_inventory_service.exception.SneakerNotFoundException;
 import com.rarekickz.rk_inventory_service.external.ExternalOrderService;
 import com.rarekickz.rk_inventory_service.repository.SneakerRepository;
 import com.rarekickz.rk_inventory_service.service.BrandService;
 import com.rarekickz.rk_inventory_service.service.SneakerImageService;
 import com.rarekickz.rk_inventory_service.service.SneakerSizeService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -98,13 +98,13 @@ class SneakerServiceImplUnitTest {
     }
 
     @Test
-    void findPremiumSneaker_throwsEntityNotFoundException() {
+    void findPremiumSneaker_throwsSneakerNotFoundException() {
         // Arrange
         when(sneakerRepository.findBySpecialIsTrue()).thenReturn(Optional.empty());
 
         // Act
         // Assert
-        assertThrows(EntityNotFoundException.class, () -> sneakerService.findPremiumSneaker());
+        assertThrows(SneakerNotFoundException.class, () -> sneakerService.findPremiumSneaker());
     }
 
     @Test
@@ -121,14 +121,14 @@ class SneakerServiceImplUnitTest {
     }
 
     @Test
-    void findMostPopularSneaker_throwsEntityNotFoundException() {
+    void findMostPopularSneaker_throwsSneakerNotFoundException() {
         // Arrange
         when(externalOrderService.findMostPopularSneakerId()).thenReturn(1L);
         when(sneakerRepository.findByIdWithImages(1L)).thenReturn(Optional.empty());
 
         // Act
         // Assert
-        assertThrows(EntityNotFoundException.class, () -> sneakerService.findMostPopularSneaker());
+        assertThrows(SneakerNotFoundException.class, () -> sneakerService.findMostPopularSneaker());
     }
 
     @Test
@@ -145,14 +145,14 @@ class SneakerServiceImplUnitTest {
     }
 
     @Test
-    void findById_throwsEntityNotFoundException() {
+    void findById_throwsSneakerNotFoundException() {
         // Arrange
         Long sneakerId = 1L;
         when(sneakerRepository.findByIdWithImages(sneakerId)).thenReturn(Optional.empty());
 
         // Act
         // Assert
-        assertThrows(EntityNotFoundException.class, () -> sneakerService.findById(sneakerId));
+        assertThrows(SneakerNotFoundException.class, () -> sneakerService.findById(sneakerId));
     }
 
     @Test
@@ -394,7 +394,7 @@ class SneakerServiceImplUnitTest {
     }
 
     @Test
-    void update_throwsEntityNotFoundException() {
+    void update_throwsSneakerNotFoundException() {
         // Arrange
         SneakerSizeDTO sneakerSizeDTO = new SneakerSizeDTO(10.0, 10L);
         SneakerDTO sneakerDTO = SneakerDTO.builder()
@@ -412,17 +412,17 @@ class SneakerServiceImplUnitTest {
 
         // Act
         // Assert
-        assertThrows(EntityNotFoundException.class, () -> sneakerService.update(sneakerDTO));
+        assertThrows(SneakerNotFoundException.class, () -> sneakerService.update(sneakerDTO));
     }
 
     @Test
-    void deleteById_throwsEntityNotFoundException() {
+    void deleteById_throwsSneakerNotFoundException() {
         // Arrange
         when(sneakerRepository.findById(sneaker.getId())).thenReturn(Optional.empty());
 
         // Act
         // Assert
-        assertThrows(EntityNotFoundException.class, () -> sneakerService.deleteById(sneaker.getId()));
+        assertThrows(SneakerNotFoundException.class, () -> sneakerService.deleteById(sneaker.getId()));
     }
 
     @Test
@@ -466,13 +466,13 @@ class SneakerServiceImplUnitTest {
     }
 
     @Test
-    void premium_throwsEntityNotFoundException() {
+    void premium_throwsSneakerNotFoundException() {
         // Arrange
         when(sneakerRepository.findById(sneaker.getId())).thenReturn(Optional.empty());
 
         // Act
         // Assert
-        assertThrows(EntityNotFoundException.class, () -> sneakerService.premium(sneaker.getId()));
+        assertThrows(SneakerNotFoundException.class, () -> sneakerService.premium(sneaker.getId()));
     }
 
     @Test

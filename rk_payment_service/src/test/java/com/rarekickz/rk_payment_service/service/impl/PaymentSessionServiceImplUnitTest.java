@@ -4,9 +4,9 @@ import com.rarekickz.rk_payment_service.domain.PaymentSession;
 import com.rarekickz.rk_payment_service.dto.PaymentDataDTO;
 import com.rarekickz.rk_payment_service.dto.PaymentObjectDTO;
 import com.rarekickz.rk_payment_service.dto.WebhookDTO;
+import com.rarekickz.rk_payment_service.exception.PaymentSessionNotFoundException;
 import com.rarekickz.rk_payment_service.external.ExternalOrderService;
 import com.rarekickz.rk_payment_service.repository.PaymentSessionRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -77,13 +77,13 @@ class PaymentSessionServiceImplUnitTest {
     }
 
     @Test
-    void processWebhook_throwEntityNotFoundException() {
+    void processWebhook_throwPaymentSessionNotFoundException() {
         // Arrange
         when(paymentSessionRepository.findByStripeSessionId(sessionId)).thenReturn(Optional.empty());
 
         // Act
         // Assert
-        assertThrows(EntityNotFoundException.class, () -> paymentSessionService.processWebhook(webhookDTO));
+        assertThrows(PaymentSessionNotFoundException.class, () -> paymentSessionService.processWebhook(webhookDTO));
     }
 
     @Test

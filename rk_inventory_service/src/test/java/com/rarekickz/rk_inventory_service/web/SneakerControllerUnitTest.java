@@ -167,7 +167,7 @@ class SneakerControllerUnitTest {
 
         // Assert
         verify(sneakerService).create(createSneakerDTO);
-        assertThat(actualCreatedSneakerResponse.getStatusCode(), is(HttpStatus.OK));
+        assertThat(actualCreatedSneakerResponse.getStatusCode(), is(HttpStatus.CREATED));
         assertThat(actualCreatedSneakerResponse.getBody(), is(equalTo(actualSneakerDTO)));
     }
 

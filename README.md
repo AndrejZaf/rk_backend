@@ -68,5 +68,5 @@ for serialization to optimize data exchange across the microservices.
 - Registry Service - Registry that helps the microservices find and communicate with each other.
 
 <p align="center">
-  <img align="center" alt="RK Communication Diagram" src="./local/rk_communication_diagram.png" />
+  <img align="center" alt="RK Communication Diagram" src="local/images/rk_communication_diagram.png" />
 </p>
