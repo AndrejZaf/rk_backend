@@ -31,7 +31,7 @@ class PaymentControllerUnitTest {
         WebhookDTO webhookDTO = mock(WebhookDTO.class);
 
         // Act
-        ResponseEntity<String> actualPaymentResponse = paymentController.finalizeOrder(webhookDTO);
+        ResponseEntity<Void> actualPaymentResponse = paymentController.finalizeOrder(webhookDTO);
 
         // Assert
         assertThat(actualPaymentResponse.getStatusCode(), is(equalTo(HttpStatus.OK)));

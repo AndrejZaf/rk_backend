@@ -2,6 +2,9 @@ package com.rarekickz.rk_payment_service.web;
 
 import com.rarekickz.rk_payment_service.dto.WebhookDTO;
 import com.rarekickz.rk_payment_service.service.PaymentSessionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +24,14 @@ public class PaymentController {
     private final PaymentSessionService paymentSessionService;
 
     @PostMapping
-    public ResponseEntity<String> finalizeOrder(@Valid @RequestBody final WebhookDTO webhookDTO) {
+    @Operation(summary = "Finalize order after Stripe action")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Successfully processed order"),
+                    @ApiResponse(responseCode = "400", description = "Invalid request"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+    public ResponseEntity<Void> finalizeOrder(@Valid @RequestBody final WebhookDTO webhookDTO) {
         log.info("Received a request to process order after stripe action");
         paymentSessionService.processWebhook(webhookDTO);
         return new ResponseEntity<>(HttpStatus.OK);

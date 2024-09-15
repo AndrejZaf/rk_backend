@@ -8,14 +8,17 @@
         <version>3.0.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>org.rarekickz</groupId>
     <artifactId>rk_backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rk_backend</name>
     <packaging>pom</packaging>
+
     <properties>
         <java.version>17</java.version>
     </properties>
+
     <modules>
         <module>rk_inventory_service</module>
         <module>rk_grpc_interface</module>
