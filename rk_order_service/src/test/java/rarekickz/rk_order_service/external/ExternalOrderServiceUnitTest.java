@@ -93,7 +93,7 @@ class ExternalOrderServiceUnitTest {
     @Test
     void cancelOrder_cancelsTheOrderAndRestoresTheInventory() {
         // Arrange
-        when(orderService.findByUuid(orderRequest.getOrderId())).thenReturn(order);
+        when(orderService.findByOrderId(orderRequest.getOrderId())).thenReturn(order);
 
         // Act
         externalOrderService.cancelOrder(orderRequest, responseObserver);
@@ -108,7 +108,7 @@ class ExternalOrderServiceUnitTest {
     @Test
     void finalizeOrder_successfullyCompletesTheOrder() {
         // Arrange
-        when(orderService.findByUuid(orderRequest.getOrderId())).thenReturn(order);
+        when(orderService.findByOrderId(orderRequest.getOrderId())).thenReturn(order);
 
         // Act
         externalOrderService.finalizeOrder(orderRequest, responseObserver);
@@ -124,7 +124,7 @@ class ExternalOrderServiceUnitTest {
     void getOrderDetails_sendOrderDetails() {
         // Arrange
         ExtendedSneakerDTO extendedSneakerDTO = new ExtendedSneakerDTO(1L, "Nike Air Zoom Pegasus 38", 100.0);
-        when(orderService.findByUuid(orderRequest.getOrderId())).thenReturn(order);
+        when(orderService.findByOrderId(orderRequest.getOrderId())).thenReturn(order);
         when(externalSneakerService.getSneakerDetails(anyList())).thenReturn(List.of(extendedSneakerDTO));
 
         // Act

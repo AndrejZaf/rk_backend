@@ -118,25 +118,25 @@ class OrderServiceImplUnitTest {
     }
 
     @Test
-    void findByUuid_returnsOrder() {
+    void findByOrderId_returnsOrder() {
         // Arrange
         when(orderRepository.findByOrderUuid(order.getOrderUuid())).thenReturn(Optional.of(order));
 
         // Act
-        Order actualOrder = orderService.findByUuid(order.getOrderUuid().toString());
+        Order actualOrder = orderService.findByOrderId(order.getOrderUuid().toString());
 
         // Assert
         assertThat(actualOrder, is(equalTo(order)));
     }
 
     @Test
-    void findByUuid_throwsEntityNotFoundException() {
+    void findByOrderId_throwsEntityNotFoundException() {
         // Arrange
         when(orderRepository.findByOrderUuid(order.getOrderUuid())).thenReturn(Optional.empty());
 
         // Act
         // Assert
-        assertThrows(EntityNotFoundException.class, () -> orderService.findByUuid(order.getOrderUuid().toString()));
+        assertThrows(EntityNotFoundException.class, () -> orderService.findByOrderId(order.getOrderUuid().toString()));
     }
 
     @Test

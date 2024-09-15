@@ -123,7 +123,7 @@ class OrderControllerUnitTest {
         // Arrange
         UUID orderId = UUID.randomUUID();
         OrderInventory orderInventory = new OrderInventory(1L, 1L, 10.0, order);
-        when(orderService.findByUuid(orderId.toString())).thenReturn(order);
+        when(orderService.findByOrderId(orderId.toString())).thenReturn(order);
         when(orderInventoryService.findAllByOrderId(orderId.toString())).thenReturn(List.of(orderInventory));
 
         // Act

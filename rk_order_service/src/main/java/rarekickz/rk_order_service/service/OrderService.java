@@ -12,7 +12,7 @@ public interface OrderService {
 
     String create(CreateOrderDTO createOrderDTO);
 
-    Order findByUuid(String id);
+    Order findByOrderId(String orderId);
 
     Order save(Order order);
 

@@ -25,13 +25,12 @@ public class PaymentController {
 
     @PostMapping
     @Operation(summary = "Finalize order after Stripe action")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Successfully processed order"),
-                    @ApiResponse(responseCode = "400", description = "Invalid request"),
-                    @ApiResponse(responseCode = "404", description = "Payment session not found"),
-                    @ApiResponse(responseCode = "500", description = "Internal server error")
-            })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully processed order"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "Payment session not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Void> finalizeOrder(@Valid @RequestBody final WebhookDTO webhookDTO) {
         log.info("Received a request to process order after stripe action");
         paymentSessionService.processWebhook(webhookDTO);

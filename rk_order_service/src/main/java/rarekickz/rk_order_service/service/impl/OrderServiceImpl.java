@@ -1,6 +1,5 @@
 package rarekickz.rk_order_service.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +13,7 @@ import rarekickz.rk_order_service.dto.InventorySaleDTO;
 import rarekickz.rk_order_service.dto.SaleDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.enums.OrderStatus;
+import rarekickz.rk_order_service.exception.OrderNotFoundException;
 import rarekickz.rk_order_service.external.ExternalNotificationService;
 import rarekickz.rk_order_service.external.ExternalPaymentService;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
@@ -64,10 +64,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order findByUuid(final String id) {
-        log.debug("Retrieving order from the database by ID: [{}]", id);
-        return orderRepository.findByOrderUuid(UUID.fromString(id))
-                .orElseThrow(EntityNotFoundException::new);
+    public Order findByOrderId(final String orderId) {
+        log.debug("Retrieving order from the database by ID: [{}]", orderId);
+        return orderRepository.findByOrderUuid(UUID.fromString(orderId))
+                .orElseThrow(OrderNotFoundException::new);
     }
 
     @Override

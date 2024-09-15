@@ -39,7 +39,7 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
     public void getOrderDetails(final OrderRequest request, final StreamObserver<OrderResponse> responseObserver) {
         log.debug("Received a request to get the order details from the database");
         final String orderUuid = request.getOrderId();
-        final Order order = orderService.findByUuid(orderUuid);
+        final Order order = orderService.findByOrderId(orderUuid);
         final List<Long> sneakerIds = order.getOrderInventory().stream()
                 .map(OrderInventory::getSneakerId)
                 .toList();
@@ -68,7 +68,7 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
     @Override
     public void finalizeOrder(final OrderRequest request, final StreamObserver<Empty> responseObserver) {
         log.debug("Received a request to finalize order with ID: [{}]", request.getOrderId());
-        final Order order = orderService.findByUuid(request.getOrderId());
+        final Order order = orderService.findByOrderId(request.getOrderId());
         order.setOrderStatus(OrderStatus.ORDER_PAID);
         orderService.save(order);
         externalNotificationService.sendEmailForSuccessfulOrder(order.getDeliveryInfo().getEmail(), order.getOrderUuid().toString());
@@ -79,7 +79,7 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
     @Override
     public void cancelOrder(final OrderRequest request, final StreamObserver<Empty> responseObserver) {
         log.debug("Received a request to cancel order with ID: [{}]", request.getOrderId());
-        final Order order = orderService.findByUuid(request.getOrderId());
+        final Order order = orderService.findByOrderId(request.getOrderId());
         order.setOrderStatus(OrderStatus.ORDER_CANCELLED);
         final List<SneakerDTO> sneakers = order.getOrderInventory().stream()
                 .map(orderInv -> new SneakerDTO(orderInv.getSneakerId(), orderInv.getSneakerSize()))
