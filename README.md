@@ -1,13 +1,13 @@
-<h1 style="font-weight: bold; text-align:center;">RareKickz Backend 👟</h1>
+<h1 align="center" style="font-weight: bold;">RareKickz Backend 👟</h1>
 
-<p style="text-align:center;">
+<p align="center">
   <a href="#tech">Technologies</a> •
   <a href="#started">Getting Started</a> •
   <a href="#routes">API Endpoints</a> •
   <a href="#arch">Architecture</a>
 </p>
 
-<p style="text-align:center;">
+<p align="center">
     <b>Backend e-commerce application consisting of inventory management, order management and payment APIs.</b>
 </p>
 
@@ -59,9 +59,14 @@ The backend application adopts a microservices architecture, with gRPC facilitat
 services. This approach ensures high performance, low latency, and type-safe interactions, leveraging Protocol Buffers
 for serialization to optimize data exchange across the microservices.
 
-- Inventory Service
-- Order Service
-- Payment Service
-- Notification Service
-- Gateway Service
-- Registry Service
+- Inventory Service - Responsible for managing the inventory such as sneakers, brands, sneaker images and sneaker sizes.
+- Order Service - Responsible for managing the orders such as creating and editing orders as well as reserving stock.
+- Payment Service - Serves as a facade which utilizes Stripe Payment Gateway.
+- Notification Service - Event driven service which is responsible for sending emails whenever an order has been created
+  or paid.
+- Gateway Service - Single entrypoint for the application, the goal is to re-route the calls to the respective services.
+- Registry Service - Registry that helps the microservices find and communicate with each other.
+
+<p align="center">
+  <img align="center" alt="RK Communication Diagram" src="./local/rk_communication_diagram.png" />
+</p>
