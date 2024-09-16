@@ -13,10 +13,12 @@
 
 <h2 id="technologies">💻 Technologies</h2>
 
-- [![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)](#)
-- [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&logoColor=fff)](#)
-- [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)](#)
-- [![Stripe](https://img.shields.io/badge/Stripe-5851DD?logo=stripe&logoColor=fff)](#)
+- ![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)
+- ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&logoColor=fff)
+- ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)
+- ![Stripe](https://img.shields.io/badge/Stripe-5851DD?logo=stripe&logoColor=fff)
+- ![Keycloak](https://img.shields.io/badge/Keycloak-008aaa?logo=keycloak&logoColor=white)
+- ![PostgreSQL](https://img.shields.io/badge/Postgresql-30363D?logo=postgresql&logoColor=white)
 
 <h2 id="started">🚀 Getting started</h2>
 <h3>Prerequisites</h3>
