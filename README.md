@@ -37,10 +37,11 @@
   application has been deployed.
 
 <h3>Starting the Project</h3>
-Clone the project, and run the docker-compose.yml file located in the `~/local` folder. This will allow you to bootstrap
-some of the project dependencies such as keycloak, ngrok, mailhog and the database.
 
-Once that's done execute the following maven command in order to download the necessary dependencies.
+- Clone the project, and run the docker-compose.yml file located in the `~/local` folder. This will allow you to
+  bootstrap
+some of the project dependencies such as keycloak, ngrok, mailhog and the database.
+- Once that's done execute the following maven command in order to download the necessary dependencies.
 
 ```
 mvn clean install
