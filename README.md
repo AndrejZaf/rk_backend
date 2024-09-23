@@ -1,4 +1,7 @@
-<h1 align="center" style="font-weight: bold;">RareKickz Backend 👟</h1>
+<p align="center">
+<img align="center" width="150" alt="Rare Kickz Logo" src="local/images/rk-short-logo.png" />
+</p>
+<h1 align="center" style="font-weight: bold;">RareKickz Backend</h1>
 
 <p align="center">
   <a href="#tech">Technologies</a> •
