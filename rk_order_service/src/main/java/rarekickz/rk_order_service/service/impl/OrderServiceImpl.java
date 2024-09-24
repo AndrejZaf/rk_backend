@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<SaleDTO> generateStatistics() {
         log.debug("Generating statistics");
-        Map<Long, BrandDTO> brandIdToBrandMap = externalBrandService.getAllBrands();
+        final Map<Long, BrandDTO> brandIdToBrandMap = externalBrandService.getAllBrands();
         final List<OrderInventory> orderInventoryList = orderInventoryService.findAllInLastWeek();
         final Map<String, Map<LocalDate, List<OrderInventory>>> brandToSalesPerDate = orderInventoryList.stream()
                 .collect(Collectors.groupingBy(orderInventory -> brandIdToBrandMap.get(orderInventory.getBrandId()).getName(),

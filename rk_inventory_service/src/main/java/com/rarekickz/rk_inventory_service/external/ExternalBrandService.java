@@ -20,15 +20,15 @@ public class ExternalBrandService extends BrandServiceGrpc.BrandServiceImplBase 
     private final BrandService brandService;
 
     @Override
-    public void getAllBrands(Empty request, StreamObserver<BrandsResponse> responseObserver) {
+    public void getAllBrands(final Empty request, final StreamObserver<BrandsResponse> responseObserver) {
         log.debug("Received request to get all brands");
-        List<Brand> brands = brandService.findAll().stream()
+        final List<Brand> brands = brandService.findAll().stream()
                 .map(brand -> Brand.newBuilder()
                         .setId(brand.getId())
                         .setName(brand.getName())
                         .build())
                 .toList();
-        BrandsResponse brandsResponse = BrandsResponse.newBuilder()
+        final BrandsResponse brandsResponse = BrandsResponse.newBuilder()
                 .addAllBrands(brands)
                 .build();
         responseObserver.onNext(brandsResponse);
