@@ -1,7 +1,5 @@
-package rarekickz.rk_order_service.external;
+package rarekickz.rk_order_service.external.impl;
 
-import com.rarekickz.proto.lib.ExtendedSneakerDetails;
-import com.rarekickz.proto.lib.ExtendedSneakerDetailsResponse;
 import com.rarekickz.proto.lib.OrderTotalPriceResponse;
 import com.rarekickz.proto.lib.SneakerDetails;
 import com.rarekickz.proto.lib.SneakerDetailsResponse;
@@ -12,9 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import rarekickz.rk_order_service.dto.ExtendedSneakerDTO;
-import rarekickz.rk_order_service.dto.ExtendedSneakerDetailsDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
-import rarekickz.rk_order_service.external.impl.ExternalSneakerServiceImpl;
 
 import java.util.List;
 
@@ -26,7 +22,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static rarekickz.rk_order_service.external.converter.SneakerDetailsConverter.convertToExtendedSneakerDTOList;
-import static rarekickz.rk_order_service.external.converter.SneakerDetailsConverter.convertToExtendedSneakerDetailsDTOList;
 
 @ExtendWith(MockitoExtension.class)
 class ExternalSneakerServiceImplUnitTest {
@@ -99,29 +94,5 @@ class ExternalSneakerServiceImplUnitTest {
         // Assert
         assertThat(actualSneakerDetails, hasSize(1));
         assertThat(actualSneakerDetails, is(equalTo(extendedSneakerDTOs)));
-    }
-
-
-    @Test
-    void getExtendedSneakerDetails() {
-        // Arrange
-        List<Long> sneakerIds = List.of(1L);
-        ExtendedSneakerDetails sneakerDetails = ExtendedSneakerDetails.newBuilder()
-                .setId(1L)
-                .setPrice(150.0)
-                .setName("Test")
-                .build();
-        ExtendedSneakerDetailsResponse sneakerDetailsResponse = ExtendedSneakerDetailsResponse.newBuilder()
-                .addSneakerDetails(sneakerDetails)
-                .build();
-        when(sneakerServiceBlockingStub.getExtendedSneakerDetails(any())).thenReturn(sneakerDetailsResponse);
-        List<ExtendedSneakerDetailsDTO> extendedSneakerDTOs = convertToExtendedSneakerDetailsDTOList(sneakerDetailsResponse.getSneakerDetailsList());
-
-        // Act
-        List<ExtendedSneakerDetailsDTO> actualSneakerExtendedDetails = externalSneakerService.getExtendedSneakerDetails(sneakerIds);
-
-        // Assert
-        assertThat(actualSneakerExtendedDetails, hasSize(1));
-        assertThat(actualSneakerExtendedDetails, is(equalTo(extendedSneakerDTOs)));
     }
 }

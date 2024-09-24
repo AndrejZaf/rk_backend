@@ -12,13 +12,14 @@ import org.springframework.security.core.context.SecurityContextImpl;
 import rarekickz.rk_order_service.domain.DeliveryInfo;
 import rarekickz.rk_order_service.domain.Order;
 import rarekickz.rk_order_service.domain.OrderInventory;
+import rarekickz.rk_order_service.dto.BrandDTO;
 import rarekickz.rk_order_service.dto.CreateOrderDTO;
 import rarekickz.rk_order_service.dto.DeliveryInfoDTO;
-import rarekickz.rk_order_service.dto.ExtendedSneakerDetailsDTO;
 import rarekickz.rk_order_service.dto.SaleDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.enums.OrderStatus;
 import rarekickz.rk_order_service.exception.OrderNotFoundException;
+import rarekickz.rk_order_service.external.ExternalBrandService;
 import rarekickz.rk_order_service.external.ExternalNotificationService;
 import rarekickz.rk_order_service.external.ExternalPaymentService;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
@@ -28,6 +29,7 @@ import rarekickz.rk_order_service.service.OrderInventoryService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,6 +66,9 @@ class OrderServiceImplUnitTest {
 
     @Mock
     private ExternalNotificationService externalNotificationService;
+
+    @Mock
+    private ExternalBrandService externalBrandService;
 
     private Order order;
 
@@ -154,16 +159,13 @@ class OrderServiceImplUnitTest {
     @Test
     void generateStatistics_returnsListOfSales() {
         // Arrange
-        OrderInventory orderInventory = new OrderInventory(1L, 1L, 10.0, order);
+        OrderInventory orderInventory = new OrderInventory(1L, 1L, 1L, 10.0, order);
         orderInventory.setCreatedDate(LocalDateTime.now());
         List<OrderInventory> orderInventoryList = List.of(orderInventory);
         when(orderInventoryService.findAllInLastWeek()).thenReturn(orderInventoryList);
-        ExtendedSneakerDetailsDTO sneakerDetails = new ExtendedSneakerDetailsDTO(1L, "Test", 15.0, "Test");
-        List<ExtendedSneakerDetailsDTO> extendedSneakerDetails = List.of(sneakerDetails);
-        List<Long> sneakerIds = orderInventoryList.stream()
-                .map(OrderInventory::getSneakerId)
-                .toList();
-        when(externalSneakerService.getExtendedSneakerDetails(sneakerIds)).thenReturn(extendedSneakerDetails);
+        BrandDTO brandDTO = new BrandDTO(1L, "Test");
+        Map<Long, BrandDTO> brandIdToBrand = Map.of(1L, brandDTO);
+        when(externalBrandService.getAllBrands()).thenReturn(brandIdToBrand);
 
         // Act
         List<SaleDTO> actualSales = orderService.generateStatistics();
@@ -171,6 +173,6 @@ class OrderServiceImplUnitTest {
         // Assert
         assertThat(actualSales.size(), is(equalTo(1)));
         verify(orderInventoryService).findAllInLastWeek();
-        verify(externalSneakerService).getExtendedSneakerDetails(sneakerIds);
+        verify(externalBrandService).getAllBrands();
     }
 }

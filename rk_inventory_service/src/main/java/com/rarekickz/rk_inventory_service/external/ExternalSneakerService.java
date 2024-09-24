@@ -3,8 +3,6 @@ package com.rarekickz.rk_inventory_service.external;
 import com.google.protobuf.Empty;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
-import com.rarekickz.proto.lib.ExtendedSneakerDetails;
-import com.rarekickz.proto.lib.ExtendedSneakerDetailsResponse;
 import com.rarekickz.proto.lib.OrderTotalPriceResponse;
 import com.rarekickz.proto.lib.ReserveSneakersRequest;
 import com.rarekickz.proto.lib.SneakerDetails;
@@ -90,26 +88,6 @@ public class ExternalSneakerService extends SneakerServiceGrpc.SneakerServiceImp
                         .build())
                 .toList();
         final SneakerDetailsResponse sneakerDetailsResponse = SneakerDetailsResponse.newBuilder()
-                .addAllSneakerDetails(sneakerDetails)
-                .build();
-        responseObserver.onNext(sneakerDetailsResponse);
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void getExtendedSneakerDetails(final SneakerIdsRequest request,
-                                          final StreamObserver<ExtendedSneakerDetailsResponse> responseObserver) {
-        log.debug("Received request to get extended sneaker details");
-        final List<Sneaker> sneakers = sneakerService.findAllByIds(request.getSneakerIdList());
-        final List<ExtendedSneakerDetails> sneakerDetails = sneakers.stream()
-                .map(sneaker -> ExtendedSneakerDetails.newBuilder()
-                        .setPrice(sneaker.getPrice())
-                        .setName(sneaker.getName())
-                        .setId(sneaker.getId())
-                        .setBrandName(sneaker.getBrand().getName())
-                        .build())
-                .toList();
-        final ExtendedSneakerDetailsResponse sneakerDetailsResponse = ExtendedSneakerDetailsResponse.newBuilder()
                 .addAllSneakerDetails(sneakerDetails)
                 .build();
         responseObserver.onNext(sneakerDetailsResponse);

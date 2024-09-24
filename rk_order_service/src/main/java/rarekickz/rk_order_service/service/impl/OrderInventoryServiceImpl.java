@@ -29,6 +29,7 @@ public class OrderInventoryServiceImpl implements OrderInventoryService {
         final List<OrderInventory> orderInventory = sneakers.stream()
                 .map(sneaker -> OrderInventory.builder()
                         .sneakerId(sneaker.getId())
+                        .brandId(sneaker.getBrandId())
                         .sneakerSize(sneaker.getSize())
                         .order(order)
                         .build())

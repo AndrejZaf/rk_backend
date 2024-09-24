@@ -7,13 +7,14 @@ import org.springframework.stereotype.Service;
 import rarekickz.rk_order_service.domain.DeliveryInfo;
 import rarekickz.rk_order_service.domain.Order;
 import rarekickz.rk_order_service.domain.OrderInventory;
+import rarekickz.rk_order_service.dto.BrandDTO;
 import rarekickz.rk_order_service.dto.CreateOrderDTO;
-import rarekickz.rk_order_service.dto.ExtendedSneakerDetailsDTO;
 import rarekickz.rk_order_service.dto.InventorySaleDTO;
 import rarekickz.rk_order_service.dto.SaleDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 import rarekickz.rk_order_service.enums.OrderStatus;
 import rarekickz.rk_order_service.exception.OrderNotFoundException;
+import rarekickz.rk_order_service.external.ExternalBrandService;
 import rarekickz.rk_order_service.external.ExternalNotificationService;
 import rarekickz.rk_order_service.external.ExternalPaymentService;
 import rarekickz.rk_order_service.external.ExternalSneakerService;
@@ -27,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -41,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ExternalPaymentService externalPaymentService;
     private final ExternalNotificationService externalNotificationService;
+    private final ExternalBrandService externalBrandService;
 
     @Override
     public List<Order> findAll() {
@@ -79,16 +80,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<SaleDTO> generateStatistics() {
         log.debug("Generating statistics");
+        Map<Long, BrandDTO> brandIdToBrandMap = externalBrandService.getAllBrands();
         final List<OrderInventory> orderInventoryList = orderInventoryService.findAllInLastWeek();
-        final List<Long> sneakerIds = orderInventoryList.stream().map(OrderInventory::getSneakerId).toList();
-        final List<ExtendedSneakerDetailsDTO> extendedSneakerDetails = externalSneakerService.getExtendedSneakerDetails(sneakerIds);
-        final Map<Long, ExtendedSneakerDetailsDTO> sneakerIdToDetails = extendedSneakerDetails.stream()
-                .collect(Collectors.toMap(ExtendedSneakerDetailsDTO::getId, Function.identity()));
         final Map<String, Map<LocalDate, List<OrderInventory>>> brandToSalesPerDate = orderInventoryList.stream()
-                .collect(Collectors.groupingBy(orderInventory -> {
-                    ExtendedSneakerDetailsDTO extendedSneakerDetailsDTO = sneakerIdToDetails.get(orderInventory.getSneakerId());
-                    return extendedSneakerDetailsDTO.getBrandName();
-                }, Collectors.groupingBy(orderInventory -> orderInventory.getCreatedDate().toLocalDate())));
+                .collect(Collectors.groupingBy(orderInventory -> brandIdToBrandMap.get(orderInventory.getBrandId()).getName(),
+                        Collectors.groupingBy(orderInventory -> orderInventory.getCreatedDate().toLocalDate())));
         final List<SaleDTO> totalSales = new ArrayList<>();
         brandToSalesPerDate.forEach((brandName, salesPerDate) -> {
             final SaleDTO sales = new SaleDTO(brandName, new ArrayList<>());

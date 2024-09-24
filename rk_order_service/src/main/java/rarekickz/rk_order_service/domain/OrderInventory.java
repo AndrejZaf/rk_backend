@@ -28,6 +28,9 @@ public class OrderInventory extends Auditable {
     @Column(name = "sneaker_id", nullable = false)
     private Long sneakerId;
 
+    @Column
+    private Long brandId;
+
     @Column(name = "sneaker_size", nullable = false)
     private Double sneakerSize;
 

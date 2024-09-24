@@ -1,4 +1,4 @@
-package rarekickz.rk_order_service.external;
+package rarekickz.rk_order_service.external.impl;
 
 import com.rarekickz.proto.lib.NotificationServiceGrpc;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import rarekickz.rk_order_service.external.impl.ExternalNotificationServiceImpl;
 
 import java.util.UUID;
 

@@ -43,3 +43,8 @@ grpc:
       enable-keep-alive: true
       keep-alive-without-calls: true
       negotiation-type: plaintext
+    brandsService:
+      address: ${BRAND_SERVICE_ADDRESS:static://localhost:9090}
+      enable-keep-alive: true
+      keep-alive-without-calls: true
+      negotiation-type: plaintext

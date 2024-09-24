@@ -44,7 +44,7 @@ class OrderInventoryServiceImplUnitTest {
                 .orderStatus(OrderStatus.ORDER_STOCK_RESERVED)
                 .userId(UUID.randomUUID())
                 .build();
-        OrderInventory orderInventory = new OrderInventory(1L, 1L, 10.0, order);
+        OrderInventory orderInventory = new OrderInventory(1L, 1L, 1L, 10.0, order);
         orderInventoryList = List.of(orderInventory);
     }
 

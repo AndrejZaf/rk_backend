@@ -13,6 +13,9 @@
             <column name="sneaker_id" type="int">
                 <constraints nullable="false"/>
             </column>
+            <column name="brand_id" type="int">
+                <constraints nullable="false"/>
+            </column>
             <column name="sneaker_size" type="double">
                 <constraints nullable="false"/>
             </column>

@@ -1,7 +1,6 @@
 package rarekickz.rk_order_service.external;
 
 import rarekickz.rk_order_service.dto.ExtendedSneakerDTO;
-import rarekickz.rk_order_service.dto.ExtendedSneakerDetailsDTO;
 import rarekickz.rk_order_service.dto.SneakerDTO;
 
 import java.util.List;
@@ -15,6 +14,4 @@ public interface ExternalSneakerService {
     Double getTotalPrice(List<Long> sneakerIds);
 
     List<ExtendedSneakerDTO> getSneakerDetails(List<Long> sneakerIds);
-
-    List<ExtendedSneakerDetailsDTO> getExtendedSneakerDetails(List<Long> sneakerIds);
 }

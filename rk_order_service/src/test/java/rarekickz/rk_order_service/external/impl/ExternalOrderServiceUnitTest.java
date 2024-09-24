@@ -1,4 +1,4 @@
-package rarekickz.rk_order_service.external;
+package rarekickz.rk_order_service.external.impl;
 
 import com.google.protobuf.Empty;
 import com.rarekickz.proto.lib.OrderRequest;
@@ -14,7 +14,8 @@ import rarekickz.rk_order_service.domain.Order;
 import rarekickz.rk_order_service.domain.OrderInventory;
 import rarekickz.rk_order_service.dto.ExtendedSneakerDTO;
 import rarekickz.rk_order_service.enums.OrderStatus;
-import rarekickz.rk_order_service.external.impl.ExternalOrderService;
+import rarekickz.rk_order_service.external.ExternalNotificationService;
+import rarekickz.rk_order_service.external.ExternalSneakerService;
 import rarekickz.rk_order_service.service.OrderInventoryService;
 import rarekickz.rk_order_service.service.OrderService;
 
@@ -59,7 +60,7 @@ class ExternalOrderServiceUnitTest {
                 .orderStatus(OrderStatus.ORDER_STOCK_RESERVED)
                 .userId(UUID.randomUUID())
                 .build();
-        OrderInventory orderInventory = new OrderInventory(1L, 1L, 10.0, order);
+        OrderInventory orderInventory = new OrderInventory(1L, 1L, 1L, 10.0, order);
         order.setOrderInventory(Set.of(orderInventory));
         DeliveryInfo deliveryInfo = DeliveryInfo.builder()
                 .id(1L)

@@ -15,4 +15,12 @@ public class SneakerDTO {
 
     @NotNull
     private Double size;
+
+    @NotNull
+    private Long brandId;
+
+    public SneakerDTO(Long id, Double size) {
+        this.id = id;
+        this.size = size;
+    }
 }

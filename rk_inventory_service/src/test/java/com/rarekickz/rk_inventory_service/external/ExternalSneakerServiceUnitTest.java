@@ -1,8 +1,6 @@
 package com.rarekickz.rk_inventory_service.external;
 
 import com.google.protobuf.Empty;
-import com.rarekickz.proto.lib.ExtendedSneakerDetails;
-import com.rarekickz.proto.lib.ExtendedSneakerDetailsResponse;
 import com.rarekickz.proto.lib.OrderTotalPriceResponse;
 import com.rarekickz.proto.lib.ReserveSneakersRequest;
 import com.rarekickz.proto.lib.SneakerDetails;
@@ -159,28 +157,6 @@ class ExternalSneakerServiceUnitTest {
 
         // Act
         externalSneakerService.getSneakerDetails(sneakerIdsRequest, responseObserver);
-
-        // Assert
-        verify(responseObserver).onNext(sneakerDetailsResponse);
-        verify(responseObserver).onCompleted();
-    }
-
-    @Test
-    void getExtendedSneakerDetails_returnsSneakerDetailsForSelectedSneakers() {
-        // Arrange
-        ExtendedSneakerDetails sneakerDetails = ExtendedSneakerDetails.newBuilder()
-                .setPrice(sneaker.getPrice())
-                .setName(sneaker.getName())
-                .setId(sneaker.getId())
-                .setBrandName(sneaker.getBrand().getName())
-                .build();
-        ExtendedSneakerDetailsResponse sneakerDetailsResponse = ExtendedSneakerDetailsResponse.newBuilder()
-                .addSneakerDetails(sneakerDetails)
-                .build();
-        when(sneakerService.findAllByIds(List.of(1L))).thenReturn(List.of(sneaker));
-
-        // Act
-        externalSneakerService.getExtendedSneakerDetails(sneakerIdsRequest, responseObserver);
 
         // Assert
         verify(responseObserver).onNext(sneakerDetailsResponse);
