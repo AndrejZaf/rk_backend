@@ -1,6 +1,6 @@
 #!/bin/bash
+chmod +x init-db.sh
 set -e
-
 psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
     CREATE DATABASE rk_inventory;
     CREATE DATABASE rk_payment;

@@ -32,4 +32,4 @@ grpc:
       keep-alive-without-calls: true
       negotiation-type: plaintext
 webhook-callback:
-  url: ${WEBHOOK_CALLBACK_URL:http://localhost:8080/apy/payment}
+  url: ${WEBHOOK_CALLBACK_URL:http://localhost:8080/api/payments}

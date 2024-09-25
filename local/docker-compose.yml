@@ -9,24 +9,30 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: user
+    networks:
+      - rk_network
   keycloak:
     container_name: keycloak
     image: quay.io/keycloak/keycloak:24.0.4
     volumes:
       - ./keycloak/themes:/opt/keycloak/themes
       - ./keycloak/import:/opt/keycloak/data/import
-    command: start-dev --import-realm
+    command: start-dev --import-realm --http-port=8090
     ports:
-      - "8090:8080"
+      - "8090:8090"
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      - rk_network
   mailhog:
     image: mailhog/mailhog
     container_name: 'mailhog'
     ports:
       - "1025:1025"
       - "8025:8025"
+    networks:
+      - rk_network
   ngrok:
     container_name: 'ngrok'
     image: ngrok/ngrok:latest
@@ -41,3 +47,97 @@ services:
       - "4040:4040"
     environment:
       NGROK_AUTHTOKEN: ${NG_ROK_TOKEN}
+    networks:
+      - rk_network
+  registry-service:
+    container_name: registry-service
+    image: rk_registry_service:latest
+    build:
+      context: ../rk_registry_service
+    ports:
+      - "8761:8761"
+    networks:
+      - rk_network
+  inventory-service:
+    container_name: inventory-service
+    image: rk_inventory_service:latest
+    build:
+      context: ../rk_inventory_service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+      - keycloak
+      - registry-service
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/rk_inventory
+      EUREKA_URL: http://registry-service:8761/eureka
+      KEYCLOAK_ISSUER_URI: http://keycloak:8090/realms/rk_ecommerce
+      KEYCLOAK_JWK_URI: http://keycloak:8090/realms/rk_ecommerce/protocol/openid-connect/certs
+    networks:
+      - rk_network
+  payment-service:
+    container_name: payment-service
+    image: rk_payment_service:latest
+    build:
+      context: ../rk_payment_service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - postgres
+      - registry-service
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/rk_payment
+      STRIPE_API_KEY: sk_test_cPFnlTE1PZoNYEJAppyCX0st00aIDM9PbS
+      WEBHOOK_CALLBACK_URL: https://9479-77-28-240-94.ngrok-free.app/api/payments
+      EUREKA_URL: http://registry-service:8761/eureka
+    networks:
+      - rk_network
+  order-service:
+    container_name: order-service
+    image: rk_order_service:latest
+    build:
+      context: ../rk_order_service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - postgres
+      - keycloak
+      - registry-service
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/rk_order
+      EUREKA_URL: http://registry-service:8761/eureka
+      KEYCLOAK_ISSUER_URI: http://keycloak:8090/realms/rk_ecommerce
+      KEYCLOAK_JWK_URI: http://keycloak:8090/realms/rk_ecommerce/protocol/openid-connect/certs
+    networks:
+      - rk_network
+  notification-service:
+    container_name: notification-service
+    image: rk_notification_service:latest
+    build:
+      context: ../rk_notification_service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - registry-service
+    environment:
+      EUREKA_URL: http://registry-service:8761/eureka
+    networks:
+      - rk_network
+  gateway-service:
+    container_name: gateway-service
+    image: rk_gateway_service:latest
+    build:
+      context: ../rk_gateway_service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - registry-service
+    environment:
+      EUREKA_URL: http://registry-service:8761/eureka
+    networks:
+      - rk_network
+
+networks:
+  rk_network:
+    driver: bridge
