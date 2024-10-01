@@ -1,6 +1,7 @@
 package com.rarekickz.rk_inventory_service.external.impl;
 
 import com.google.protobuf.Empty;
+import com.google.protobuf.Int64Value;
 import com.rarekickz.proto.lib.OrderServiceGrpc;
 import com.rarekickz.proto.lib.PopularSneakerResponse;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class ExternalOrderServiceImplUnitTest {
     void findMostPopularSneakerId_returnsSneakerId() {
         // Arrange
         PopularSneakerResponse popularSneakerResponse = PopularSneakerResponse.newBuilder()
-                .setSneakerId(1L)
+                .setSneakerId(Int64Value.of(1L))
                 .build();
         when(orderServiceBlockingStub.findMostPopularSneaker(Empty.newBuilder().build())).thenReturn(popularSneakerResponse);
 

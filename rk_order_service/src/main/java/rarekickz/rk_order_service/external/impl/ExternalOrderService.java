@@ -1,6 +1,7 @@
 package rarekickz.rk_order_service.external.impl;
 
 import com.google.protobuf.Empty;
+import com.google.protobuf.Int64Value;
 import com.rarekickz.proto.lib.CustomerDetailsResponse;
 import com.rarekickz.proto.lib.OrderRequest;
 import com.rarekickz.proto.lib.OrderResponse;
@@ -24,6 +25,8 @@ import rarekickz.rk_order_service.service.OrderInventoryService;
 import rarekickz.rk_order_service.service.OrderService;
 
 import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @GrpcService
@@ -94,9 +97,12 @@ public class ExternalOrderService extends OrderServiceGrpc.OrderServiceImplBase 
     public void findMostPopularSneaker(final Empty request, final StreamObserver<PopularSneakerResponse> responseObserver) {
         log.debug("Received a request to find the most popular sneaker");
         final Long mostPopularSneakerId = orderInventoryService.findMostPopularSneaker();
-        final PopularSneakerResponse popularSneakerResponse = PopularSneakerResponse.newBuilder()
-                .setSneakerId(mostPopularSneakerId)
-                .build();
+        final PopularSneakerResponse.Builder responseBuilder = PopularSneakerResponse.newBuilder();
+        if (nonNull(mostPopularSneakerId)) {
+            responseBuilder.setSneakerId(Int64Value.of(mostPopularSneakerId));
+        }
+
+        final PopularSneakerResponse popularSneakerResponse = responseBuilder.build();
         responseObserver.onNext(popularSneakerResponse);
         responseObserver.onCompleted();
     }
